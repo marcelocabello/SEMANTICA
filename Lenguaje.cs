@@ -105,6 +105,14 @@ namespace Semantica
                                                 }
                                                 break;
                                                 case TipoDato.Float:
+                                                if (nuevovalor < 3.4)
+                                                {
+                                                    v.setValor(nuevovalor);
+                                                }
+                                                else
+                                                {
+                                                    throw new Error("Sintaxis: el valor no es un float", log, linea);
+                                                }
                                             
                                                 break;
                                             }                          
