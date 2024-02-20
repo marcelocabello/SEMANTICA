@@ -83,7 +83,7 @@ namespace Semantica
             foreach (Variable v in variables)//foreach buscar variable clase20/02/24 3 dias de entregar
             {
                 if (nombre == v.getNombre())//si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
-                                            /*switch(tipodato){
+                  switch(tipodato){
                                                 case TipoDato.Char:
                                                 if (nuevovalor < 255)
                                                 {
@@ -93,10 +93,21 @@ namespace Semantica
                                                 {
                                                     throw new Error("Sintaxis: el valor no es un char", log, linea);
                                                 }
-                                                case TipoDato.Int:
-                                                case TipoDato.Float:
                                                 break;
-                                            }*/
+                                                case TipoDato.Int:
+                                                if (nuevovalor < 2147483647)
+                                                {
+                                                    v.setValor(nuevovalor);
+                                                }
+                                                else
+                                                {
+                                                    throw new Error("Sintaxis: el valor no es un int", log, linea);
+                                                }
+                                                break;
+                                                case TipoDato.Float:
+                                            
+                                                break;
+                                            }                          
                 {
                     v.setValor(nuevovalor);
                 }
@@ -505,10 +516,10 @@ namespace Semantica
                     switch (tipo)
                     {
                         case "char":
-                            s.Push(s.Pop() % 255);
+                            s.Push(s.Pop() % 256);
                             break;
                         case "int":
-                            s.Push(s.Pop() % 65535);
+                            s.Push(s.Pop() % 65536);
                             break;
                     }
 
