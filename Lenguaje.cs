@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 /*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO?(PRINTF Y SCANF)
 /*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = LO DUDO ):
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
-Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CREO QUE YA
+Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= LISTO
                     si lo calculado no es un número
 Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO
 */
@@ -83,39 +83,40 @@ namespace Semantica
             foreach (Variable v in variables)//foreach buscar variable clase20/02/24 3 dias de entregar
             {
                 if (nombre == v.getNombre())//si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
-                  switch(tipodato){
-                                                case TipoDato.Char:
-                                                if (nuevovalor < 255)
-                                                {
-                                                    v.setValor(nuevovalor);
-                                                }
-                                                else
-                                                {
-                                                    throw new Error("Sintaxis: el valor no es un char", log, linea);
-                                                }
-                                                break;
-                                                case TipoDato.Int:
-                                                if (nuevovalor < 2147483647)
-                                                {
-                                                    v.setValor(nuevovalor);
-                                                }
-                                                else
-                                                {
-                                                    throw new Error("Sintaxis: el valor no es un int", log, linea);
-                                                }
-                                                break;
-                                                case TipoDato.Float:
-                                                if (nuevovalor < 3.4)
-                                                {
-                                                    v.setValor(nuevovalor);
-                                                }
-                                                else
-                                                {
-                                                    throw new Error("Sintaxis: el valor no es un float", log, linea);
-                                                }
-                                            
-                                                break;
-                                            }                          
+                    switch (tipodato)
+                    {
+                        case TipoDato.Char:
+                            if (nuevovalor < 255)
+                            {
+                                v.setValor(nuevovalor);
+                            }
+                            else
+                            {
+                                throw new Error("Sintaxis: el valor no es un char", log, linea);
+                            }
+                            break;
+                        case TipoDato.Int:
+                            if (nuevovalor < 2147483647)
+                            {
+                                v.setValor(nuevovalor);
+                            }
+                            else
+                            {
+                                throw new Error("Sintaxis: el valor no es un int", log, linea);
+                            }
+                            break;
+                        case TipoDato.Float:
+                            if (nuevovalor < 3.4)
+                            {
+                                v.setValor(nuevovalor);
+                            }
+                            else
+                            {
+                                throw new Error("Sintaxis: el valor no es un float", log, linea);
+                            }
+
+                            break;
+                    }
                 {
                     v.setValor(nuevovalor);
                 }
@@ -238,7 +239,7 @@ namespace Semantica
             match("(");
 
             string cadena = getContenido();
-            Console.WriteLine(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"')); 
+            Console.WriteLine(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"'));
             match(Tipos.Cadena);
 
             if (getContenido() == ",")
@@ -284,7 +285,7 @@ namespace Semantica
             }
             catch (System.Exception)
             {
-                
+
                 throw new Error("Sintaxis: el valor no es un número", log, linea);
             }
             //modificaValor(nombre, float.Parse(valor));
@@ -531,7 +532,7 @@ namespace Semantica
                             break;
                     }
 
-                    float resultado = s.Pop(); 
+                    float resultado = s.Pop();
                     s.Push(resultado);
 
                 }
