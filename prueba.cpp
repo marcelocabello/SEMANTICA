@@ -6,7 +6,7 @@ char y,a;
 
 void main()
 {
-    x=257;
+    x=257;//tiene que dar el valor
     y=(char)x;
     printf("El valor\nde y =",y);
     printf("\nInserte el valor de i\n");
