@@ -80,9 +80,23 @@ namespace Semantica
         }
         private void modificaValor(string nombre, float nuevovalor)
         {
-            foreach (Variable v in variables)
+            foreach (Variable v in variables)//foreach buscar variable clase20/02/24 3 dias de entregar
             {
-                if (nombre == v.getNombre())
+                if (nombre == v.getNombre())//si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
+                                            /*switch(tipodato){
+                                                case TipoDato.Char:
+                                                if (nuevovalor < 255)
+                                                {
+                                                    v.setValor(nuevovalor);
+                                                }
+                                                else
+                                                {
+                                                    throw new Error("Sintaxis: el valor no es un char", log, linea);
+                                                }
+                                                case TipoDato.Int:
+                                                case TipoDato.Float:
+                                                break;
+                                            }*/
                 {
                     v.setValor(nuevovalor);
                 }
@@ -488,7 +502,7 @@ namespace Semantica
                     // Pop: sacar lo de la expresión, dividir lo del pop dependiendo del tipo de dato,
                     // luego el resultado meter nuevamente al stack
 
-                    /*switch (tipo)
+                    switch (tipo)
                     {
                         case "char":
                             s.Push(s.Pop() % 255);
@@ -499,7 +513,7 @@ namespace Semantica
                     }
 
                     float resultado = s.Pop(); 
-                    s.Push(resultado);*/
+                    s.Push(resultado);
 
                 }
                 else

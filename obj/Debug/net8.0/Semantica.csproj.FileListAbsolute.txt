@@ -26,3 +26,4 @@ C:\Users\marce\Documents\LYA2\Semantica\SEMANTICA\obj\Debug\net8.0\refint\Semant
 C:\Users\marce\Documents\LYA2\Semantica\SEMANTICA\obj\Debug\net8.0\Semantica.pdb
 C:\Users\marce\Documents\LYA2\Semantica\SEMANTICA\obj\Debug\net8.0\Semantica.genruntimeconfig.cache
 C:\Users\marce\Documents\LYA2\Semantica\SEMANTICA\obj\Debug\net8.0\ref\Semantica.dll
+C:\Users\marce\Documents\LYA2\Semantica\SEMANTICA\obj\Debug\net8.0\Semantica.sourcelink.json

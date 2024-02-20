@@ -68,3 +68,65 @@ scanf = Identificador
 & = Caracter
 i = Identificador
 ) = Caracter
+; = FinSentencia
+i = Identificador
+-= = IncrementoTermino
+4 = Numero
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"El valor de i -=4 : " = Cadena
+, = Caracter
+i = Identificador
+) = Caracter
+; = FinSentencia
+i = Identificador
+++ = IncrementoTermino
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"\nEl valor de i++ = " = Cadena
+, = Caracter
+i = Identificador
+) = Caracter
+; = FinSentencia
+i = Identificador
+-- = IncrementoTermino
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"\nEl valor de i--= " = Cadena
+, = Caracter
+i = Identificador
+) = Caracter
+; = FinSentencia
+x = Identificador
++= = IncrementoTermino
+i = Identificador
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"\nEl valor de x+=i : " = Cadena
+, = Caracter
+x = Identificador
+) = Caracter
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"\nEl valor de z = " = Cadena
+, = Caracter
+z = Identificador
+) = Caracter
+; = FinSentencia
+} = Fin
+ = Fin
+Variables: 
+altura = Int = 0
+i = Int = 7
+j = Int = 0
+x26 = Int = 0
+x = Float = 0
+c = Float = 0
+z = Float = 0
+y = Char = 0
+a = Char = 0
