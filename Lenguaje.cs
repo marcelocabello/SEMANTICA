@@ -95,8 +95,9 @@ namespace Semantica
                             v.setValor(nuevovalor);
                             break;
                     }
-                else {
-                    
+                else
+                {
+
 
                 }
                 {
@@ -278,7 +279,15 @@ namespace Semantica
         //Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
         private void Asignacion()
         {
-            match(Tipos.Identificador);//1
+            //match(Tipos.Identificador);//1
+            if (existeVariable(getContenido()))
+            {
+                match(Tipos.Identificador);
+            }
+            else
+            {
+                throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
+            }
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 string operador = getContenido();

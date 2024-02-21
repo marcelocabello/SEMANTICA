@@ -45,7 +45,7 @@ x = Identificador
 y = Identificador
 = = Asignacion
 ( = Caracter
-int = tipoDatos
+char = tipoDatos
 ) = Caracter
 x = Identificador
 ; = FinSentencia
