@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
 Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= LISTO
                     si lo calculado no es un número
-Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO
+Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO YA CASI 
 */
 namespace Semantica
 {
@@ -80,43 +80,25 @@ namespace Semantica
         }
         private void modificaValor(string nombre, float nuevovalor)
         {
-            foreach (Variable v in variables)//foreach buscar variable clase20/02/24 3 dias de entregar
+            foreach (Variable v in variables)// foreach buscar variable clase20/02/24 3 dias de entregar
             {
-                if (nombre == v.getNombre())//si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
-                    switch (tipodato)
+                if (nombre == v.getNombre())// si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
+                    switch (v.getTipo())
                     {
-                        case TipoDato.Char:
-                            if (nuevovalor < 255)
-                            {
-                                v.setValor(nuevovalor);
-                            }
-                            else
-                            {
-                                throw new Error("Sintaxis: el valor no es un char", log, linea);
-                            }
+                        case Variable.TipoDato.Char:
+                            v.setValor(nuevovalor % 256);
                             break;
-                        case TipoDato.Int:
-                            if (nuevovalor < 2147483647)
-                            {
-                                v.setValor(nuevovalor);
-                            }
-                            else
-                            {
-                                throw new Error("Sintaxis: el valor no es un int", log, linea);
-                            }
+                        case Variable.TipoDato.Int:
+                            v.setValor(nuevovalor % 65536);
                             break;
-                        case TipoDato.Float:
-                            if (nuevovalor < 3.4)
-                            {
-                                v.setValor(nuevovalor);
-                            }
-                            else
-                            {
-                                throw new Error("Sintaxis: el valor no es un float", log, linea);
-                            }
-
+                        case Variable.TipoDato.Float:
+                            v.setValor(nuevovalor);
                             break;
                     }
+                else {
+                    
+
+                }
                 {
                     v.setValor(nuevovalor);
                 }
@@ -355,8 +337,8 @@ namespace Semantica
             Expresion();
             match(Tipos.OperadorRelacional);
             Expresion();
-            //s.Pop();
-            //s.Pop();
+            s.Pop();
+            s.Pop();
         }
         //While -> while(Condicion) bloqueInstrucciones | Instruccion
         private void While()
