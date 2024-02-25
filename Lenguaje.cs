@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-/*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO?(PRINTF Y SCANF)
-/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = LO DUDO ):
+/*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO
+/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = X NO):
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
-Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= LISTO
+Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
                     si lo calculado no es un número
-Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO YA CASI 
+Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO X
 */
 namespace Semantica
 {
@@ -96,6 +96,10 @@ namespace Semantica
                             break;
                     }
                 else
+                {
+
+
+                }
                 {
                     v.setValor(nuevovalor);
                 }
@@ -444,7 +448,7 @@ namespace Semantica
                         s.Push(N1 - N2);
                         break;
                 }
-                // Llamada recursiva para operaciones múltiples
+                MasTermino(); // Llamada recursiva para operaciones múltiples
             }
         }
         private void Termino()
@@ -461,7 +465,7 @@ namespace Semantica
                 string operador = getContenido();
                 match(Tipos.OperadorFactor);
                 Factor();
-              
+                // Realizar la operación correspondiente
                 float N2 = s.Pop();
                 float N1 = s.Pop();
                 switch (operador)
@@ -476,7 +480,7 @@ namespace Semantica
                         s.Push(N1 % N2);
                         break;
                 }
-                PorFactor(); 
+                PorFactor(); // Llamada recursiva para operaciones múltiples
             }
         }
 
