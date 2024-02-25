@@ -97,10 +97,6 @@ namespace Semantica
                     }
                 else
                 {
-
-
-                }
-                {
                     v.setValor(nuevovalor);
                 }
             }
@@ -448,7 +444,7 @@ namespace Semantica
                         s.Push(N1 - N2);
                         break;
                 }
-                MasTermino(); // Llamada recursiva para operaciones múltiples
+                // Llamada recursiva para operaciones múltiples
             }
         }
         private void Termino()
@@ -465,7 +461,7 @@ namespace Semantica
                 string operador = getContenido();
                 match(Tipos.OperadorFactor);
                 Factor();
-                // Realizar la operación correspondiente
+              
                 float N2 = s.Pop();
                 float N1 = s.Pop();
                 switch (operador)
@@ -480,7 +476,7 @@ namespace Semantica
                         s.Push(N1 % N2);
                         break;
                 }
-                PorFactor(); // Llamada recursiva para operaciones múltiples
+                PorFactor(); 
             }
         }
 

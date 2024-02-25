@@ -1,23 +1,16 @@
 #include <stdio.h>
 #include <math.h>
-int altura,i,j,x26;
-float x,c,z;
-char y,a;
+
+int altura,i,j;
+float x,y,z;
+char c,d,e;
 
 void main()
 {
-    x=257;//tiene que dar el valor
-    y=(char)x;
-    printf("El valor\nde y =",y);
-    printf("\nInserte el valor de i\n");
-    scanf("%f",&i);
-    i -=4;
-    printf("El valor de i -=4 : ",i);
-    i++;
-    printf("\nEl valor de i++ = ",i);
-    i--;
-    printf("\nEl valor de i--= ",i);
-    x+=i;
-    printf("\nEl valor de x+=i : ",x);
-    printf("\nEl valor de z = ",z);
+    x = (30+50)*80-(100-40)/20;
+    printf("\nEl valor de x \t= ",x);
+    e = (char)x-(13+(char)266);
+    printf("\nIngrese el valor de d \t= ");
+    scanf("%f",&d);
+    printf("\nd = ",d);
 }
