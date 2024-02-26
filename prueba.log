@@ -91,23 +91,4 @@ scanf = Identificador
 & = Caracter
 d = Identificador
 ) = Caracter
-; = FinSentencia
-printf = Identificador
-( = Caracter
-"\nd = " = Cadena
-, = Caracter
-d = Identificador
-) = Caracter
-; = FinSentencia
-} = Fin
- = Fin
-Variables: 
-altura = Int = 0
-i = Int = 0
-j = Int = 0
-x = Float = 6397
-y = Float = 0
-z = Float = 0
-c = Char = 0
-d = Char = 23
-e = Char = 230
+Error Sintaxis: el valor ingresado no es un número válido en la linea 14

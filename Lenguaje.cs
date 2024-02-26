@@ -84,13 +84,21 @@ namespace Semantica
             {
                 if (nombre == v.getNombre())
                 {
-                    // si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
+                    // si existe obtener el tipo de dato de la variable hacer switch tipo de dato 
                     switch (v.getTipo())
                     {
                         case Variable.TipoDato.Char:
+                            if (nuevovalor < 0 || nuevovalor > 255)
+                            {
+                                throw new Error("Sintaxis: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo char", log, linea);
+                            }
                             v.setValor(nuevovalor % 256);
                             break;
                         case Variable.TipoDato.Int:
+                            if (nuevovalor < 0 || nuevovalor > 65535)
+                            {
+                                throw new Error("Sintaxis: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo int", log, linea);
+                            }
                             v.setValor(nuevovalor % 65536);
                             break;
                         case Variable.TipoDato.Float:
@@ -101,6 +109,7 @@ namespace Semantica
                 }
             }
         }
+
 
         //Librerias -> #include<identificador(.h)?> Librerias?
         private void Librerias()
@@ -263,7 +272,7 @@ namespace Semantica
 
             try
             {
-                // Intenta convertir la entrada a float y asignarla a la variable
+
                 float nuevoValor = float.Parse(valor);
                 modificaValor(identificador, nuevoValor);
             }
@@ -277,7 +286,7 @@ namespace Semantica
         }
 
 
-        
+
         // Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
         private void Asignacion()
         {
@@ -324,6 +333,19 @@ namespace Semantica
                     {
                         valorActual -= valorAsignar;
                     }
+                    else if (operador == "*=")
+                    {
+                        valorActual *= valorAsignar;
+                    }
+                    else if (operador == "/=")
+                    {
+                        valorActual /= valorAsignar;
+                    }
+                    else if (operador == "%=")
+                    {
+                        valorActual %= valorAsignar;
+                    }
+                    
 
                     modificaValor(identificador, valorActual);
                 }
