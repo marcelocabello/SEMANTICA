@@ -89,6 +89,5 @@ scanf = Identificador
 "%f" = Cadena
 , = Caracter
 & = Caracter
-d = Identificador
-) = Caracter
-Error Sintaxis: el valor no es un número en la linea 14
+r = Identificador
+Error Sintaxis: la variable r no esta declarada en la linea 14
