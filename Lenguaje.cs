@@ -148,7 +148,7 @@ namespace Semantica
         private void listaIdentificadores(Variable.TipoDato tipo)
         {
             string nombre = getContenido();
-            match(Tipos.Identificador);
+            match(Tipos.Identificador);//1
             if (!existeVariable(nombre))
             {
                 variables.Add(new Variable(nombre, tipo));
@@ -229,14 +229,14 @@ namespace Semantica
             {
                 match(",");
                 string identificador = getContenido();
-
+                 match(Tipos.Identificador);//1
                 if (!existeVariable(identificador))
                 {
                     throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
                 }
 
                 Console.WriteLine(valorVariable(identificador));
-                match(Tipos.Identificador);
+               
             }
 
             match(")");
@@ -252,6 +252,7 @@ namespace Semantica
             match(",");
             match("&");
             string identificador = getContenido();
+             match(Tipos.Identificador);//1
 
             if (!existeVariable(identificador))
             {
@@ -260,7 +261,7 @@ namespace Semantica
 
 
             string nombre = getContenido();
-            match(Tipos.Identificador);
+           
             string valor = Console.ReadLine();
             try
             {
@@ -279,15 +280,14 @@ namespace Semantica
         //Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
         private void Asignacion()
         {
-            //match(Tipos.Identificador);//1
+            match(Tipos.Identificador);//1
             if (existeVariable(getContenido()))
             {
-                match(Tipos.Identificador);
+               throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
             }
             else
             {
-                throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
-            }
+                
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 string operador = getContenido();
@@ -306,6 +306,7 @@ namespace Semantica
             {
                 match("=");
                 Expresion();
+            }
             }
             //Console.WriteLine(s.Pop());
             match(";");
@@ -407,6 +408,10 @@ namespace Semantica
         private void Incremento()
         {
             match(Tipos.Identificador);//1
+            if (existeVariable(getContenido()))
+            {
+                throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
+            }
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 match(Tipos.IncrementoTermino);
@@ -480,7 +485,7 @@ namespace Semantica
                         s.Push(N1 % N2);
                         break;
                 }
-                PorFactor(); // Llamada recursiva para operaciones múltiples
+                
             }
         }
 
@@ -498,7 +503,12 @@ namespace Semantica
             {
                 //Console.Write(getContenido());
                 s.Push(valorVariable(getContenido()));
+               if (!existeVariable(getContenido()))
+                {
+                    throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
+                }
                 match(Tipos.Identificador);//1
+            
             }
             else
             {
@@ -521,10 +531,11 @@ namespace Semantica
                         case "int":
                             s.Push(s.Pop() % 65536);
                             break;
+                        case "float":
+                            s.Push(s.Pop());
+                            break;
                     }
 
-                    float resultado = s.Pop();
-                    s.Push(resultado);
 
                 }
                 else

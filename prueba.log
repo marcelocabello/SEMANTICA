@@ -89,5 +89,25 @@ scanf = Identificador
 "%f" = Cadena
 , = Caracter
 & = Caracter
-r = Identificador
-Error Sintaxis: la variable r no esta declarada en la linea 14
+d = Identificador
+) = Caracter
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"\nd = " = Cadena
+, = Caracter
+d = Identificador
+) = Caracter
+; = FinSentencia
+} = Fin
+ = Fin
+Variables: 
+altura = Int = 90
+i = Int = 90
+j = Int = 90
+x = Float = 90
+y = Float = 90
+z = Float = 90
+c = Char = 90
+d = Char = 90
+e = Char = 90
