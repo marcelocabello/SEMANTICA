@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 /*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO
-/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = X NO):
+/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = X NO
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
 Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
                     si lo calculado no es un número
-Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = NO X
+Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = X NO 
 */
 namespace Semantica
 {
@@ -80,9 +80,11 @@ namespace Semantica
         }
         private void modificaValor(string nombre, float nuevovalor)
         {
-            foreach (Variable v in variables)// foreach buscar variable clase20/02/24 3 dias de entregar
+            foreach (Variable v in variables)
             {
-                if (nombre == v.getNombre())// si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
+                if (nombre == v.getNombre())
+                {
+                    // si existe obtener el tipo de dato de la variable hacer swtich tipo de dato 
                     switch (v.getTipo())
                     {
                         case Variable.TipoDato.Char:
@@ -95,16 +97,11 @@ namespace Semantica
                             v.setValor(nuevovalor);
                             break;
                     }
-                else
-                {
-
-
-                }
-                {
-                    v.setValor(nuevovalor);
+                    return;
                 }
             }
         }
+
         //Librerias -> #include<identificador(.h)?> Librerias?
         private void Librerias()
         {
@@ -215,7 +212,7 @@ namespace Semantica
             }
         }
         //    Requerimiento 1: Printf -> printf(cadena(, Identificador)?);
-        // Requerimiento 1: Printf -> printf(cadena(, Identificador)?);
+
         private void Printf()
         {
             match("printf");
@@ -229,14 +226,14 @@ namespace Semantica
             {
                 match(",");
                 string identificador = getContenido();
-                 match(Tipos.Identificador);//1
+                match(Tipos.Identificador);//1
                 if (!existeVariable(identificador))
                 {
                     throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
                 }
 
                 Console.WriteLine(valorVariable(identificador));
-               
+
             }
 
             match(")");
@@ -251,66 +248,97 @@ namespace Semantica
             match(Tipos.Cadena);
             match(",");
             match("&");
+
             string identificador = getContenido();
-             match(Tipos.Identificador);//1
+            match(Tipos.Identificador);//1
 
             if (!existeVariable(identificador))
             {
                 throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
             }
 
+            //Console.Write("Ingrese un valor para " + identificador + ": ");
 
-            string nombre = getContenido();
-           
             string valor = Console.ReadLine();
+
             try
             {
-                modificaValor(nombre, float.Parse(valor));
+                // Intenta convertir la entrada a float y asignarla a la variable
+                float nuevoValor = float.Parse(valor);
+                modificaValor(identificador, nuevoValor);
             }
-            catch (System.Exception)
+            catch (System.FormatException)
             {
-
-                throw new Error("Sintaxis: el valor no es un número", log, linea);
+                throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
             }
-            //modificaValor(nombre, float.Parse(valor));
+
             match(")");
             match(";");
         }
 
-        //Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
+
+        
+        // Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
         private void Asignacion()
         {
+            string identificador = getContenido();
             match(Tipos.Identificador);//1
-            if (existeVariable(getContenido()))
+
+            if (!existeVariable(identificador))
             {
-               throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
+                throw new Error("Sintaxis: la variable " + identificador + " no está declarada", log, linea);
             }
-            else
-            {
-                
+
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 string operador = getContenido();
                 match(Tipos.IncrementoTermino);
-                if (operador == "+=" || operador == "-=")
+                float valor = valorVariable(identificador);
+                if (operador == "++")
                 {
-                    Expresion();
+                    valor++;
                 }
-            }
-            else if (getClasificacion() == Tipos.IncrementoFactor)
-            {
-                match(Tipos.IncrementoFactor);
-                Expresion();
+                else if (operador == "--")
+                {
+                    valor--;
+                }
+                modificaValor(identificador, valor);
             }
             else
             {
-                match("=");
-                Expresion();
+
+                if (getContenido() == "+=" || getContenido() == "-=")
+                {
+                    string operador = getContenido();
+                    match(Tipos.OperadorTermino);
+                    Expresion();
+
+                    float valorAsignar = s.Pop();
+                    float valorActual = valorVariable(identificador);
+
+                    if (operador == "+=")
+                    {
+                        valorActual += valorAsignar;
+                    }
+                    else if (operador == "-=")
+                    {
+                        valorActual -= valorAsignar;
+                    }
+
+                    modificaValor(identificador, valorActual);
+                }
+                else
+                {
+                    match("=");
+                    Expresion();
+                    float nuevoValor = s.Pop();
+                    modificaValor(identificador, nuevoValor);
+                }
             }
-            }
-            //Console.WriteLine(s.Pop());
+
             match(";");
         }
+
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
         private void If()
@@ -432,7 +460,7 @@ namespace Semantica
             Termino();
             MasTermino();
         }
-        //MasTermino -> (OperadorTermino Termino)?
+
         // MasTermino -> (OperadorTermino Termino)?
         private void MasTermino()
         {
@@ -485,7 +513,7 @@ namespace Semantica
                         s.Push(N1 % N2);
                         break;
                 }
-                
+
             }
         }
 
@@ -503,12 +531,12 @@ namespace Semantica
             {
                 //Console.Write(getContenido());
                 s.Push(valorVariable(getContenido()));
-               if (!existeVariable(getContenido()))
+                if (!existeVariable(getContenido()))
                 {
                     throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
                 }
                 match(Tipos.Identificador);//1
-            
+
             }
             else
             {
