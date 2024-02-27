@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 /*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO
-/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = X NO
+/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = SI?
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
 Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
                     si lo calculado no es un número
@@ -275,19 +275,17 @@ namespace Semantica
 
                 float nuevoValor = float.Parse(valor);
                 modificaValor(identificador, nuevoValor);
+                match(")");
+                match(";");
             }
             catch (System.FormatException)
             {
                 throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
             }
 
-            match(")");
-            match(";");
+
         }
 
-
-
-        // Asignacion -> Identificador (++ | --) | (+= | -=) Expresion | (= Expresion) ;
         private void Asignacion()
         {
             string identificador = getContenido();
@@ -302,64 +300,42 @@ namespace Semantica
             {
                 string operador = getContenido();
                 match(Tipos.IncrementoTermino);
-                float valor = valorVariable(identificador);
+
+            
+                float valorActual = valorVariable(identificador);
+
                 if (operador == "++")
                 {
-                    valor++;
+                    
+                    valorActual++;
+
+                    
+                    modificaValor(identificador, valorActual);
                 }
                 else if (operador == "--")
                 {
-                    valor--;
-                }
-                modificaValor(identificador, valor);
-            }
-            else
-            {
-
-                if (getContenido() == "+=" || getContenido() == "-=")
-                {
-                    string operador = getContenido();
-                    match(Tipos.OperadorTermino);
-                    Expresion();
-
-                    float valorAsignar = s.Pop();
-                    float valorActual = valorVariable(identificador);
-
-                    if (operador == "+=")
-                    {
-                        valorActual += valorAsignar;
-                    }
-                    else if (operador == "-=")
-                    {
-                        valorActual -= valorAsignar;
-                    }
-                    else if (operador == "*=")
-                    {
-                        valorActual *= valorAsignar;
-                    }
-                    else if (operador == "/=")
-                    {
-                        valorActual /= valorAsignar;
-                    }
-                    else if (operador == "%=")
-                    {
-                        valorActual %= valorAsignar;
-                    }
                     
+                    valorActual--;
 
+                   
                     modificaValor(identificador, valorActual);
                 }
-                else
-                {
-                    match("=");
-                    Expresion();
-                    float nuevoValor = s.Pop();
-                    modificaValor(identificador, nuevoValor);
-                }
-            }
 
-            match(";");
+                match(";");
+            }
+            
+            else
+            {
+                match("=");
+                Expresion();
+                float nuevoValor = s.Pop();
+                modificaValor(identificador, nuevoValor);
+                match(";");
+            }
         }
+
+
+
 
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
@@ -458,7 +434,7 @@ namespace Semantica
         private void Incremento()
         {
             match(Tipos.Identificador);//1
-            if (existeVariable(getContenido()))
+            if (!existeVariable(getContenido()))
             {
                 throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
             }
@@ -503,7 +479,7 @@ namespace Semantica
                         s.Push(N1 - N2);
                         break;
                 }
-                MasTermino(); // Llamada recursiva para operaciones múltiples
+
             }
         }
         private void Termino()
