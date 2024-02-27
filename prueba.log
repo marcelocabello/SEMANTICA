@@ -91,27 +91,4 @@ scanf = Identificador
 & = Caracter
 d = Identificador
 ) = Caracter
-; = FinSentencia
-d = Identificador
-/= = IncrementoFactor
-2 = Numero
-; = FinSentencia
-printf = Identificador
-( = Caracter
-"\nd = " = Cadena
-, = Caracter
-d = Identificador
-) = Caracter
-; = FinSentencia
-} = Fin
- = Fin
-Variables: 
-altura = Int = 0
-i = Int = 0
-j = Int = 0
-x = Float = 6397
-y = Float = 0
-z = Float = 0
-c = Char = 0
-d = Char = 45
-e = Char = 230
+Error Semantica: el valor asignado a la variable d excede el rango permitido para tipo char en la linea 13

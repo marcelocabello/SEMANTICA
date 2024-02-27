@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 /*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO
-/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = SI?
+/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = CUMPLIDO, creo
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
 Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
                     si lo calculado no es un número
@@ -85,19 +85,21 @@ namespace Semantica
                 if (nombre == v.getNombre())
                 {
                     // si existe obtener el tipo de dato de la variable hacer switch tipo de dato 
+                    //hacer if aqui para que no se salga del rango
                     switch (v.getTipo())
                     {
                         case Variable.TipoDato.Char:
                             if (nuevovalor < 0 || nuevovalor > 255)
                             {
-                                throw new Error("Sintaxis: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo char", log, linea);
+                                // en lugar de sintaxis es semantica
+                                throw new Error("Semantica: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo char", log, linea);
                             }
                             v.setValor(nuevovalor % 256);
                             break;
                         case Variable.TipoDato.Int:
                             if (nuevovalor < 0 || nuevovalor > 65535)
                             {
-                                throw new Error("Sintaxis: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo int", log, linea);
+                                throw new Error("Semantica: el valor asignado a la variable " + nombre + " excede el rango permitido para tipo int", log, linea);
                             }
                             v.setValor(nuevovalor % 65536);
                             break;
@@ -140,6 +142,9 @@ namespace Semantica
                     break;
                 case "float":
                     tipo = Variable.TipoDato.Float;
+                    break;
+                case "char":
+                    tipo = Variable.TipoDato.Char;
                     break;
             }
             match(Tipos.tipoDatos);
@@ -296,7 +301,7 @@ namespace Semantica
             {
                 throw new Error("Sintaxis: la variable " + identificador + " no está declarada", log, linea);
             }
-
+        
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 string operador = getContenido();
@@ -329,6 +334,7 @@ namespace Semantica
                     valorActual -= valorIncremento;
                     modificaValor(identificador, valorActual);
                 }
+                //modifica valor agregar al final, aqui para optimizar
             
             }
             else if (getClasificacion()== Tipos.IncrementoFactor)
