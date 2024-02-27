@@ -323,6 +323,32 @@ namespace Semantica
 
                 match(";");
             }
+            else if (getClasificacion()== Tipos.OperadorTermino)
+            {
+                string operador = getContenido();
+                match(Tipos.OperadorTermino);
+                Expresion();
+                float N1 = s.Pop();
+                float N2 = valorVariable(identificador);
+                switch (operador)
+                {
+                    case "+=":
+                        modificaValor(identificador, N1 + N2);
+                        break;
+                    case "-=":
+                        modificaValor(identificador, N1 - N2);
+                        break;
+                    case "*=":
+                        modificaValor(identificador, N1 * N2);
+                        break;
+
+                    case "/=":
+                        modificaValor(identificador, N1 / N2);
+                        break;
+                }
+                match(";");
+
+            }
             
             else
             {
@@ -333,10 +359,6 @@ namespace Semantica
                 match(";");
             }
         }
-
-
-
-
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
         private void If()

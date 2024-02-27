@@ -92,9 +92,6 @@ scanf = Identificador
 d = Identificador
 ) = Caracter
 ; = FinSentencia
-d = Identificador
--- = IncrementoTermino
-; = FinSentencia
 printf = Identificador
 ( = Caracter
 "\nd = " = Cadena
@@ -112,5 +109,5 @@ x = Float = 6397
 y = Float = 0
 z = Float = 0
 c = Char = 0
-d = Char = 254
+d = Char = 90
 e = Char = 230
