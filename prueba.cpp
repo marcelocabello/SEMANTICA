@@ -12,5 +12,6 @@ void main()
     e = (char)x-(13+(char)266);
     printf("\nIngrese el valor de d \t= ");
     scanf("%f",&d);
+    d/=2;
     printf("\nd = ",d);
 }

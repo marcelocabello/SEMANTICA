@@ -286,6 +286,7 @@ namespace Semantica
 
         }
 
+        // Asignacion -> Identificador (+= IncrementoTermino)? (= Expresion) ;
         private void Asignacion()
         {
             string identificador = getContenido();
@@ -300,65 +301,77 @@ namespace Semantica
             {
                 string operador = getContenido();
                 match(Tipos.IncrementoTermino);
-
-            
-                float valorActual = valorVariable(identificador);
-
                 if (operador == "++")
                 {
-                    
+                    float valorActual = valorVariable(identificador);
                     valorActual++;
-
-                    
                     modificaValor(identificador, valorActual);
                 }
                 else if (operador == "--")
                 {
-                    
+                    float valorActual = valorVariable(identificador);
                     valorActual--;
-
-                   
                     modificaValor(identificador, valorActual);
                 }
-
-                match(";");
+                else if (operador == "+=")
+                {
+                    float valorActual = valorVariable(identificador);
+                    Expresion();
+                    float valorIncremento = s.Pop();
+                    valorActual += valorIncremento;
+                    modificaValor(identificador, valorActual);
+                }
+                else if (operador == "-=")
+                {
+                    float valorActual = valorVariable(identificador);
+                    Expresion();
+                    float valorIncremento = s.Pop();
+                    valorActual -= valorIncremento;
+                    modificaValor(identificador, valorActual);
+                }
+            
             }
-            else if (getClasificacion()== Tipos.OperadorTermino)
+            else if (getClasificacion()== Tipos.IncrementoFactor)
             {
                 string operador = getContenido();
-                match(Tipos.OperadorTermino);
-                Expresion();
-                float N1 = s.Pop();
-                float N2 = valorVariable(identificador);
-                switch (operador)
+                match(Tipos.IncrementoFactor);
+                if(operador == "*=")
                 {
-                    case "+=":
-                        modificaValor(identificador, N1 + N2);
-                        break;
-                    case "-=":
-                        modificaValor(identificador, N1 - N2);
-                        break;
-                    case "*=":
-                        modificaValor(identificador, N1 * N2);
-                        break;
-
-                    case "/=":
-                        modificaValor(identificador, N1 / N2);
-                        break;
+                    float valorActual = valorVariable(identificador);
+                    Expresion();
+                    float valorfactor = s.Pop();
+                    valorActual *= valorfactor;
+                    modificaValor(identificador, valorActual);
                 }
-                match(";");
-
+                else if(operador == "/=")
+                {
+                    float valorActual = valorVariable(identificador);
+                    Expresion();
+                    float valorfactor = s.Pop();
+                    valorActual /= valorfactor;
+                    modificaValor(identificador, valorActual);
+                }
+                else if(operador== "%=")
+                {
+                    float valorActual = valorVariable(identificador);
+                    Expresion();
+                    float valorfactor = s.Pop();
+                    valorActual %= valorfactor;
+                    modificaValor(identificador, valorActual);
+                }
             }
-            
             else
             {
                 match("=");
                 Expresion();
                 float nuevoValor = s.Pop();
                 modificaValor(identificador, nuevoValor);
-                match(";");
             }
+
+            match(";");
         }
+
+
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
         private void If()
