@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Formats.Tar;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,7 +9,8 @@ using System.Threading.Tasks;
 Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
 Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
                     si lo calculado no es un número
-Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = X NO 
+Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = X NO
+28 febrero, usamos if para empezar 
 */
 namespace Semantica
 {
@@ -381,11 +383,12 @@ namespace Semantica
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
         private void If()
-        {
+        {//modificacion 28 de febrero
             match("if");
             match("(");
-            Condicion();
+            bool evalua = Condicion();
             match(")");
+            Console.WriteLine(evalua);
             if (getContenido() == "{")
             {
                 bloqueInstrucciones();
@@ -409,13 +412,23 @@ namespace Semantica
         }
         //Condicion -> Expresion operadoRelacional Expresion
 
-        private void Condicion()
+        private bool Condicion()
         {
             Expresion();
+            string operador = getContenido();//28 febrero
             match(Tipos.OperadorRelacional);
             Expresion();
-            s.Pop();
-            s.Pop();
+            float E1 = s.Pop();
+            float E2 = s.Pop();
+            switch(operador)
+            {
+                case ">":return E1 > E2; //el mismo operador regresa falso o verdadero en lugar de usar if
+                case ">=":return E1 >= E2;
+                case "<":return E1 < E2;
+                case "<=":return E1 <= E2;
+                case "==":return E1 == E2;
+                default :return E1!= E2;
+            }
         }
         //While -> while(Condicion) bloqueInstrucciones | Instruccion
         private void While()
