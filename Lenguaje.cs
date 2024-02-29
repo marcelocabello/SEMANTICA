@@ -4,13 +4,8 @@ using System.Formats.Tar;
 using System.Linq;
 using System.Threading.Tasks;
 
-/*Requerimento 1: Marcar errores sintacticos para variables no declaradas = CUMPLIDO
-/*Requerimiento 2: Asignación, modifica el valor de la variable, no pasar por alto es ++ y -- = CUMPLIDO, creo
-Requerimiento 3: Printf, quitar las comillas, implementar secuencias de escapes /n /t = CUMPLIDO
-Requerimiento 4: Modificar el valor de la variable en el scanf y levantar una excepción= CUMPLIDO
-                    si lo calculado no es un número
-Requerimiento 5: Implementar casteo BUSCAR COMO CASTEAR EN C# = X NO
-28 febrero, usamos if para empezar 
+/*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	
+como regresar en el archivo de texto para verificar las iteraciones
 */
 namespace Semantica
 {
@@ -177,59 +172,59 @@ namespace Semantica
             }
         }
         //bloqueInstrucciones -> { listaIntrucciones? }
-        private void bloqueInstrucciones()
+        private void bloqueInstrucciones(bool evalua)
         {
             match("{");
             if (getContenido() != "}")
             {
-                ListaInstrucciones();
+                ListaInstrucciones(evalua);
             }
             match("}");
         }
         //ListaInstrucciones -> Instruccion ListaInstrucciones?
-        private void ListaInstrucciones()
+        private void ListaInstrucciones(bool evalua)
         {
-            Instruccion();
+            Instruccion(evalua);
             if (getContenido() != "}")
             {
-                ListaInstrucciones();
+                ListaInstrucciones(evalua);
             }
         }
         //Instruccion -> Printf | Scanf | If | While | do while | For | Asignacion
-        private void Instruccion()
+        private void Instruccion(bool evalua)
         {
             if (getContenido() == "printf")
             {
-                Printf();
+                Printf(evalua);
             }
             else if (getContenido() == "scanf")
             {
-                Scanf();
+                Scanf(evalua);
             }
             else if (getContenido() == "if")
             {
-                If();
+                If(evalua);
             }
             else if (getContenido() == "while")
             {
-                While();
+                While(evalua);
             }
             else if (getContenido() == "do")
             {
-                Do();
+                Do(evalua);
             }
             else if (getContenido() == "for")
             {
-                For();
+                For(evalua);
             }
             else
             {
-                Asignacion();
+                Asignacion(evalua);
             }
         }
         //    Requerimiento 1: Printf -> printf(cadena(, Identificador)?);
 
-        private void Printf()
+        private void Printf(bool evalua)
         {
             match("printf");
             match("(");
@@ -237,7 +232,10 @@ namespace Semantica
             string cadena = getContenido();
             Console.WriteLine(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"'));
             match(Tipos.Cadena);
-
+            if (evalua)
+            {
+                Console.Write(cadena);
+            }
             if (getContenido() == ",")
             {
                 match(",");
@@ -247,8 +245,13 @@ namespace Semantica
                 {
                     throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
                 }
-
-                Console.WriteLine(valorVariable(identificador));
+                else
+                {
+                    if (evalua)
+                    {
+                        Console.WriteLine(valorVariable(identificador));
+                    }
+                }
 
             }
 
@@ -257,7 +260,7 @@ namespace Semantica
         }
 
         // Requerimiento 2: Scanf -> scanf(cadena,&Identificador);
-        private void Scanf()
+        private void Scanf(bool evalua)
         {
             match("scanf");
             match("(");
@@ -274,27 +277,28 @@ namespace Semantica
             }
 
             //Console.Write("Ingrese un valor para " + identificador + ": ");
-
-            string valor = Console.ReadLine();
-
-            try
+            if(evalua)
+            {
+                 string valor = Console.ReadLine();
+                 try
             {
 
                 float nuevoValor = float.Parse(valor);
                 modificaValor(identificador, nuevoValor);
-                match(")");
-                match(";");
+                //match(")");
+                //match(";");
             }
             catch (System.FormatException)
             {
                 throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
             }
-
-
+            }
+                match(")");
+                match(";");
         }
 
         // Asignacion -> Identificador (+= IncrementoTermino)? (= Expresion) ;
-        private void Asignacion()
+        private void Asignacion(bool evalua)
         {
             string identificador = getContenido();
             match(Tipos.Identificador);//1
@@ -303,7 +307,7 @@ namespace Semantica
             {
                 throw new Error("Sintaxis: la variable " + identificador + " no está declarada", log, linea);
             }
-        
+
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 string operador = getContenido();
@@ -323,7 +327,7 @@ namespace Semantica
                 else if (operador == "+=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion();
+                    Expresion(evalua);
                     float valorIncremento = s.Pop();
                     valorActual += valorIncremento;
                     modificaValor(identificador, valorActual);
@@ -331,47 +335,48 @@ namespace Semantica
                 else if (operador == "-=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion();
+                    Expresion(evalua);
                     float valorIncremento = s.Pop();
                     valorActual -= valorIncremento;
                     modificaValor(identificador, valorActual);
                 }
                 //modifica valor agregar al final, aqui para optimizar
-            
+
             }
-            else if (getClasificacion()== Tipos.IncrementoFactor)
+            else if (getClasificacion() == Tipos.IncrementoFactor)
             {
                 string operador = getContenido();
                 match(Tipos.IncrementoFactor);
-                if(operador == "*=")
+                if (operador == "*=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion();
+                    Expresion(evalua);
                     float valorfactor = s.Pop();
                     valorActual *= valorfactor;
                     modificaValor(identificador, valorActual);
                 }
-                else if(operador == "/=")
+                else if (operador == "/=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion();
+                    Expresion(evalua);
                     float valorfactor = s.Pop();
                     valorActual /= valorfactor;
                     modificaValor(identificador, valorActual);
                 }
-                else if(operador== "%=")
+                else if (operador == "%=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion();
+                    Expresion(evalua);
                     float valorfactor = s.Pop();
                     valorActual %= valorfactor;
                     modificaValor(identificador, valorActual);
                 }
+                //mover modifica afuera para poner if evalua como el profe
             }
             else
             {
                 match("=");
-                Expresion();
+                Expresion(evalua);
                 float nuevoValor = s.Pop();
                 modificaValor(identificador, nuevoValor);
             }
@@ -382,110 +387,113 @@ namespace Semantica
 
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
-        private void If()
+        private void If(bool evaluaif)
         {//modificacion 28 de febrero
             match("if");
             match("(");
-            bool evalua = Condicion();
+            bool evalua = Condicion(evaluaif) && evaluaif;
             match(")");
-            Console.WriteLine(evalua);
+            //Console.WriteLine(evalua);
             if (getContenido() == "{")
             {
-                bloqueInstrucciones();
+
+                bloqueInstrucciones(evalua);
+
             }
             else
             {
-                Instruccion();
+                Instruccion(evalua);
             }
             if (getContenido() == "else")
             {
                 match("else");
                 if (getContenido() == "{")
                 {
-                    bloqueInstrucciones();
+                    bloqueInstrucciones(evalua);
                 }
                 else
                 {
-                    Instruccion();
+                    Instruccion(evalua);
                 }
             }
         }
         //Condicion -> Expresion operadoRelacional Expresion
 
-        private bool Condicion()
+        private bool Condicion(bool evalua)
         {
-            Expresion();
+            Expresion(evalua);
             string operador = getContenido();//28 febrero
             match(Tipos.OperadorRelacional);
-            Expresion();
-            float E1 = s.Pop();
+            Expresion(evalua);
             float E2 = s.Pop();
-            switch(operador)
+            float E1 = s.Pop();
+            switch (operador)
             {
-                case ">":return E1 > E2; //el mismo operador regresa falso o verdadero en lugar de usar if
-                case ">=":return E1 >= E2;
-                case "<":return E1 < E2;
-                case "<=":return E1 <= E2;
-                case "==":return E1 == E2;
-                default :return E1!= E2;
+                case ">": return E1 > E2; //el mismo operador regresa falso o verdadero en lugar de usar if
+                case ">=": return E1 >= E2;
+                case "<": return E1 < E2;
+                case "<=": return E1 <= E2;
+                case "==": return E1 == E2;
+                default: return E1 != E2;
             }
         }
         //While -> while(Condicion) bloqueInstrucciones | Instruccion
-        private void While()
+        private void While(bool evalua)
         {
             match("while");
             match("(");
-            Condicion();
+            Condicion(evalua);
             match(")");
             if (getContenido() == "{")
             {
-                bloqueInstrucciones();
+                bloqueInstrucciones(evalua);
             }
             else
             {
-                Instruccion();
+                Instruccion(evalua);
             }
         }
         //Do -> do bloqueInstrucciones | Intruccion while(Condicion);
-        private void Do()
+        private void Do(bool evalua)
         {
             match("do");
             if (getContenido() == "{")
             {
-                bloqueInstrucciones();
+                bloqueInstrucciones(evalua);
             }
             else
             {
-                Instruccion();
+                Instruccion(evalua);
             }
             match("while");
             match("(");
-            Condicion();
+            Condicion(evalua);
             match(")");
             match(";");
 
         }
         //For -> for(Asignacion Condicion; Incremento) BloqueInstruccones | Instruccion 
-        private void For()
+        private void For(bool evalua)
         {
             match("for");
             match("(");
-            Asignacion();
-            Condicion();
+            Asignacion(evalua);// despues de la asignacion salvar en el archivo la posicion y que vuelva a la posicion
+            Console.WriteLine("Contador =",ccount);
+            bool evaluafor = Condicion(evalua) && evalua;
             match(";");
-            Incremento();
+            Incremento(evalua);
             match(")");
             if (getContenido() == "{")
             {
-                bloqueInstrucciones();
+                bloqueInstrucciones(evaluafor);
             }
             else
             {
-                Instruccion();
+                Instruccion( evaluafor);
             }
         }
         //Incremento -> Identificador ++ | --
-        private void Incremento()
+        private void Incremento(bool evalua)
         {
             match(Tipos.Identificador);//1
             if (!existeVariable(getContenido()))
@@ -498,29 +506,29 @@ namespace Semantica
             }
         }
         //Main      -> void main() bloqueInstrucciones
-        private void Main()
+        private void Main(bool evalua)
         {
             match("void");
             match("main");
             match("(");
             match(")");
-            bloqueInstrucciones();
+            bloqueInstrucciones(evalua);
         }
         //Expresion -> Termino MasTermino
-        private void Expresion()
+        private void Expresion(bool evalua)
         {
-            Termino();
-            MasTermino();
+            Termino(evalua);
+            MasTermino(evalua);
         }
 
         // MasTermino -> (OperadorTermino Termino)?
-        private void MasTermino()
+        private void MasTermino(bool evalua)
         {
             if (getClasificacion() == Tipos.OperadorTermino)
             {
                 string operador = getContenido();
                 match(Tipos.OperadorTermino);
-                Termino();
+                Termino(evalua);
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
                 float N1 = s.Pop();
@@ -536,20 +544,20 @@ namespace Semantica
 
             }
         }
-        private void Termino()
+        private void Termino(bool evalua)
         {
-            Factor();
-            PorFactor();
+            Factor(evalua);
+            PorFactor( evalua);
 
         }
         // PorFactor -> (OperadorFactor Factor)?
-        private void PorFactor()
+        private void PorFactor(bool evalua)
         {
             if (getClasificacion() == Tipos.OperadorFactor)
             {
                 string operador = getContenido();
                 match(Tipos.OperadorFactor);
-                Factor();
+                Factor(evalua);
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
                 float N1 = s.Pop();
@@ -570,7 +578,7 @@ namespace Semantica
         }
 
         // Factor -> numero | identificador | (Expresion)
-        private void Factor()
+        private void Factor(bool evalua)
         {
             if (getClasificacion() == Tipos.Numero)
             {
@@ -598,7 +606,7 @@ namespace Semantica
                     string tipo = getContenido();
                     match(Tipos.tipoDatos);
                     match(")");
-                    Expresion();
+                    Expresion(evalua);
 
                     // Pop: sacar lo de la expresión, dividir lo del pop dependiendo del tipo de dato,
                     // luego el resultado meter nuevamente al stack
@@ -620,7 +628,7 @@ namespace Semantica
                 }
                 else
                 {
-                    Expresion();
+                    Expresion(evalua);
                     match(")");
                 }
             }

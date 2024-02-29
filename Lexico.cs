@@ -14,6 +14,8 @@ namespace Semantica
         private StreamReader archivo;
         protected StreamWriter log;
 
+        protected int ccount;
+
         int[,] TRAND =
         {
             //WS L	D	.	E	La	=	;	&	|	!	>	<	+	-	%	*	?	"	EOF	 /	EOL	{	}
@@ -61,6 +63,7 @@ namespace Semantica
             log = new StreamWriter("prueba.log");
             log.AutoFlush = true;
             linea = 1;
+            ccount = 0;
         }
         public Lexico(string nombre)
         {
@@ -68,6 +71,7 @@ namespace Semantica
             log = new StreamWriter("prueba.log");
             log.AutoFlush = true;
             linea = 1;
+            ccount = 0;
         }
         public void Dispose()
         {
@@ -176,6 +180,7 @@ namespace Semantica
                         linea++;
                     }
                     archivo.Read();
+                    ccount++;
                     if (estado > 0)
                     {
                         buffer += c;

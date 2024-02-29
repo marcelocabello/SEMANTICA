@@ -38,57 +38,27 @@ main = Identificador
 ( = Caracter
 ) = Caracter
 { = Inicio
+if = reservada
+( = Caracter
+1 = Numero
+!= = OperadorRelacional
+2 = Numero
+) = Caracter
+{ = Inicio
 x = Identificador
 = = Asignacion
-( = Caracter
-30 = Numero
-+ = OperadorTermino
-50 = Numero
-) = Caracter
-* = OperadorFactor
-80 = Numero
-- = OperadorTermino
-( = Caracter
 100 = Numero
-- = OperadorTermino
-40 = Numero
-) = Caracter
-/ = OperadorFactor
-20 = Numero
 ; = FinSentencia
-printf = Identificador
-( = Caracter
-"\nEl valor de x \t= " = Cadena
-, = Caracter
-x = Identificador
-) = Caracter
-; = FinSentencia
-e = Identificador
-= = Asignacion
-( = Caracter
-char = tipoDatos
-) = Caracter
-x = Identificador
-- = OperadorTermino
-( = Caracter
-13 = Numero
-+ = OperadorTermino
-( = Caracter
-char = tipoDatos
-) = Caracter
-266 = Numero
-) = Caracter
-; = FinSentencia
-printf = Identificador
-( = Caracter
-"\nIngrese el valor de d \t= " = Cadena
-) = Caracter
-; = FinSentencia
-scanf = Identificador
-( = Caracter
-"%f" = Cadena
-, = Caracter
-& = Caracter
-d = Identificador
-) = Caracter
-Error Semantica: el valor asignado a la variable d excede el rango permitido para tipo char en la linea 13
+} = Fin
+} = Fin
+ = Fin
+Variables: 
+altura = Int = 0
+i = Int = 0
+j = Int = 0
+x = Float = 100
+y = Float = 0
+z = Float = 0
+c = Char = 0
+d = Char = 0
+e = Char = 0
