@@ -11,7 +11,7 @@ namespace Semantica
         const int F = -1;
         const int E = -2;
         protected int linea;
-        private StreamReader archivo;
+        protected StreamReader archivo;
         protected StreamWriter log;
 
         protected int ccount;

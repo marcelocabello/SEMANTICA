@@ -482,11 +482,14 @@ namespace Semantica
             
             Console.WriteLine("Contador =",ccount);
             int counttmp = ccount;
+            int lineatmp = linea;
             bool evaluafor = true;
             do{
+            Console.WriteLine("\n"ccount);
+            Console.WriteLine(getContenido());
             evaluafor = Condicion() && evalua;
             match(";");
-            Incremento(evalua);
+            int Incremento(evalua);
             match(")");
             if (getContenido() == "{")
             {
@@ -498,8 +501,14 @@ namespace Semantica
             }
             if(evaluafor)
             {
-                ccount = counttmp;
+                ccount = counttmp-1;
+                linea = lineatmp;
+                nextToken();
                 //Console.WriteLine("Contador =",ccount);
+               // archivo.Seek(ccount, System.IO.SeekOrigin.Begin);
+             archivo.BaseStream.Seek(ccount,0);
+             //  archivo.BaseStream.Seek(ccount, System.IO.SeekOrigin.Begin);
+
             }
             while(evaluafor);
              }
@@ -507,6 +516,9 @@ namespace Semantica
         //Incremento -> Identificador ++ | --
         private void Incremento(bool evalua)
         {
+            string nombre= getContenido();
+            int valor = 0;
+            bool incremento = false;
             match(Tipos.Identificador);//1
             if (!existeVariable(getContenido()))
             {
@@ -514,8 +526,19 @@ namespace Semantica
             }
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
+                if (getContenido() == "++")
+                {
+                    vincremento = true;
+                }
+                else
+                {
+                    vincremento = false;
+                }
                 match(Tipos.IncrementoTermino);
             }
+            if (incremento)
+            return 1;
+            return 0;
         }
         //Main      -> void main() bloqueInstrucciones
         private void Main(bool evalua)
