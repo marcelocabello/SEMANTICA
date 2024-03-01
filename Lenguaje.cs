@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 /*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	
 como regresar en el archivo de texto para verificar las iteraciones
+
 */
 namespace Semantica
 {
@@ -478,8 +479,12 @@ namespace Semantica
             match("for");
             match("(");
             Asignacion(evalua);// despues de la asignacion salvar en el archivo la posicion y que vuelva a la posicion
+            
             Console.WriteLine("Contador =",ccount);
-            bool evaluafor = Condicion(evalua) && evalua;
+            int counttmp = ccount;
+            bool evaluafor = true;
+            do{
+            evaluafor = Condicion() && evalua;
             match(";");
             Incremento(evalua);
             match(")");
@@ -491,6 +496,13 @@ namespace Semantica
             {
                 Instruccion( evaluafor);
             }
+            if(evaluafor)
+            {
+                ccount = counttmp;
+                //Console.WriteLine("Contador =",ccount);
+            }
+            while(evaluafor);
+             }
         }
         //Incremento -> Identificador ++ | --
         private void Incremento(bool evalua)
