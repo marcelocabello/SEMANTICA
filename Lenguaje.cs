@@ -35,7 +35,7 @@ namespace Semantica
             {
                 Variables();
             }
-            Main();
+            Main(true);
             imprimeVariables();
         }
         private void imprimeVariables()
@@ -392,7 +392,7 @@ namespace Semantica
         {//modificacion 28 de febrero
             match("if");
             match("(");
-            bool evalua = Condicion() && evaluaif;
+            bool evalua = Condicion(evaluaif);
             match(")");
             //Console.WriteLine(evalua);
             if (getContenido() == "{")
@@ -485,11 +485,11 @@ namespace Semantica
             int lineatmp = linea;
             bool evaluafor = true;
             do{
-            Console.WriteLine("\n"ccount);
+            Console.WriteLine("\n",ccount);
             Console.WriteLine(getContenido());
-            evaluafor = Condicion() && evalua;
+            evaluafor = Condicion(evalua);
             match(";");
-            int Incremento(evalua);
+            Incremento(evalua);
             match(")");
             if (getContenido() == "{")
             {
@@ -510,35 +510,29 @@ namespace Semantica
              //  archivo.BaseStream.Seek(ccount, System.IO.SeekOrigin.Begin);
 
             }
-            while(evaluafor);
-             }
+             } while(evaluafor);
         }
         //Incremento -> Identificador ++ | --
-        private void Incremento(bool evalua)
+        private int Incremento(bool evalua)
         {
-            string nombre= getContenido();
-            int valor = 0;
+            string nombre = getContenido();
             bool incremento = false;
-            match(Tipos.Identificador);//1
-            if (!existeVariable(getContenido()))
+            match(Tipos.Identificador);
+            if (!existeVariable(nombre))
             {
-                throw new Error("Sintaxis: la variable " + getContenido() + " no esta declarada", log, linea);
+                throw new Error("de Sintaxis : la variable " + nombre + " no existe", log, linea);
             }
             if (getClasificacion() == Tipos.IncrementoTermino)
             {
                 if (getContenido() == "++")
                 {
-                    vincremento = true;
-                }
-                else
-                {
-                    vincremento = false;
+                    incremento = true;
                 }
                 match(Tipos.IncrementoTermino);
             }
             if (incremento)
-            return 1;
-            return 0;
+                return 1;
+            return -1;
         }
         //Main      -> void main() bloqueInstrucciones
         private void Main(bool evalua)
