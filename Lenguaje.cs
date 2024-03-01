@@ -392,7 +392,7 @@ namespace Semantica
         {//modificacion 28 de febrero
             match("if");
             match("(");
-            bool evalua = Condicion(evaluaif) && evaluaif;
+            bool evalua = Condicion() && evaluaif;
             match(")");
             //Console.WriteLine(evalua);
             if (getContenido() == "{")
