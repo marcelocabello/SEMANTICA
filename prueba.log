@@ -38,6 +38,26 @@ main = Identificador
 ( = Caracter
 ) = Caracter
 { = Inicio
+printf = Identificador
+( = Caracter
+"ingrese el valor de d: " = Cadena
+) = Caracter
+; = FinSentencia
+scanf = Identificador
+( = Caracter
+"%f" = Cadena
+, = Caracter
+& = Caracter
+d = Identificador
+) = Caracter
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"d =" = Cadena
+, = Caracter
+d = Identificador
+) = Caracter
+; = FinSentencia
 if = reservada
 ( = Caracter
 1 = Numero
@@ -45,10 +65,31 @@ if = reservada
 2 = Numero
 ) = Caracter
 { = Inicio
-x = Identificador
+d = Identificador
+++ = IncrementoTermino
+; = FinSentencia
+for = reservada
+( = Caracter
+e = Identificador
 = = Asignacion
 100 = Numero
 ; = FinSentencia
+i = Identificador
+== = OperadorRelacional
+2 = Numero
+; = FinSentencia
+i = Identificador
+++ = IncrementoTermino
+) = Caracter
+{ = Inicio
+printf = Identificador
+( = Caracter
+"e=" = Cadena
+, = Caracter
+e = Identificador
+) = Caracter
+; = FinSentencia
+} = Fin
 } = Fin
 } = Fin
  = Fin
@@ -56,9 +97,9 @@ Variables:
 altura = Int = 0
 i = Int = 0
 j = Int = 0
-x = Float = 100
+x = Float = 0
 y = Float = 0
 z = Float = 0
 c = Char = 0
-d = Char = 0
-e = Char = 0
+d = Char = 101
+e = Char = 100

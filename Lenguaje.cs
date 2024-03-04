@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 /*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	
 como regresar en el archivo de texto para verificar las iteraciones
+Requerimiento 2: incrementar la variable del for (incremento) al final de la ejecución
 
 */
 namespace Semantica
@@ -278,24 +279,24 @@ namespace Semantica
             }
 
             //Console.Write("Ingrese un valor para " + identificador + ": ");
-            if(evalua)
+            if (evalua)
             {
-                 string valor = Console.ReadLine();
-                 try
-            {
+                string valor = Console.ReadLine();
+                try
+                {
 
-                float nuevoValor = float.Parse(valor);
-                modificaValor(identificador, nuevoValor);
-                //match(")");
-                //match(";");
+                    float nuevoValor = float.Parse(valor);
+                    modificaValor(identificador, nuevoValor);
+                    //match(")");
+                    //match(";");
+                }
+                catch (System.FormatException)
+                {
+                    throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
+                }
             }
-            catch (System.FormatException)
-            {
-                throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
-            }
-            }
-                match(")");
-                match(";");
+            match(")");
+            match(";");
         }
 
         // Asignacion -> Identificador (+= IncrementoTermino)? (= Expresion) ;
@@ -392,7 +393,7 @@ namespace Semantica
         {//modificacion 28 de febrero
             match("if");
             match("(");
-            bool evalua = Condicion(evaluaif);
+            bool evalua = Condicion() && evaluaif;
             match(")");
             //Console.WriteLine(evalua);
             if (getContenido() == "{")
@@ -476,44 +477,49 @@ namespace Semantica
         //For -> for(Asignacion Condicion; Incremento) BloqueInstruccones | Instruccion 
         private void For(bool evalua)
         {
-            match("for");
-            match("(");
-            Asignacion(evalua);// despues de la asignacion salvar en el archivo la posicion y que vuelva a la posicion
-            
-            Console.WriteLine("Contador =",ccount);
-            int counttmp = ccount;
+            //match("for");
+            //match("(");
+            //Asignacion(evalua);// despues de la asignacion salvar en el archivo la posicion y que vuelva a la posicion
+
+           // Console.WriteLine("Contador =", ccount);
+            int counttmp = ccount-4;
             int lineatmp = linea;
             bool evaluafor = true;
-            do{
-            Console.WriteLine("\n",ccount);
-            Console.WriteLine(getContenido());
-            evaluafor = Condicion(evalua);
-            match(";");
-            Incremento(evalua);
-            match(")");
-            if (getContenido() == "{")
+            string variable = getContenido();
+            do
             {
-                bloqueInstrucciones(evaluafor);
-            }
-            else
-            {
-                Instruccion( evaluafor);
-            }
-            if(evaluafor)
-            {
-                ccount = counttmp-1;
-                linea = lineatmp;
-                nextToken();
-                //Console.WriteLine("Contador =",ccount);
-               // archivo.Seek(ccount, System.IO.SeekOrigin.Begin);
-             archivo.BaseStream.Seek(ccount,0);
-             //  archivo.BaseStream.Seek(ccount, System.IO.SeekOrigin.Begin);
+                Console.WriteLine("\n"+ ccount);
+                match("for");
+                match("(");
+                Asignacion(evalua);
 
-            }
-             } while(evaluafor);
+                evaluafor = Condicion() && evalua;
+                match(";");
+                Incremento();//quitar el evalua
+                match(")");
+
+                if (getContenido() == "{")
+                {
+                    bloqueInstrucciones(evaluafor);
+                }
+                else
+                {
+                    Instruccion(evaluafor);
+                }
+                if (evaluafor)
+                {
+                    modificaValor(variable, valorVariable(variable) + 1);
+                    ccount = counttmp - variable.Length;
+                    linea = lineatmp;
+                    archivo.BaseStream.Seek(ccount, SeekOrigin.Begin);
+                    nextToken();
+
+
+                }
+            } while (evaluafor);
         }
         //Incremento -> Identificador ++ | --
-        private int Incremento(bool evalua)
+        private void Incremento()
         {
             string nombre = getContenido();
             bool incremento = false;
@@ -576,7 +582,7 @@ namespace Semantica
         private void Termino(bool evalua)
         {
             Factor(evalua);
-            PorFactor( evalua);
+            PorFactor(evalua);
 
         }
         // PorFactor -> (OperadorFactor Factor)?

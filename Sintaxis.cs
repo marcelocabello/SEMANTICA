@@ -23,7 +23,7 @@ namespace Semantica
             }
             else
             {
-                throw new Error("de Sintaxis: Se espera un "+espera,log,linea);
+                throw new Error("de Sintaxis: Se espera un "+espera+"("+getContenido()+")",log,linea);
             }
         }
         public void match(Tipos espera)

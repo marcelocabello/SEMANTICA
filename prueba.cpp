@@ -6,8 +6,16 @@ char c,d,e;
 void main()
 
 {
+    printf("ingrese el valor de d: " );
+    scanf("%f",&d);
+    printf("d =",d);
     if (1!=2)
     {
-        x=100;
+        d++;
+        for ( e = 100; i==2; i++)
+        {
+           printf("e=",e);
+        }
+        
     }
 }
