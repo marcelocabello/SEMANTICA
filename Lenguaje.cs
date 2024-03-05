@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 /*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	
 como regresar en el archivo de texto para verificar las iteraciones
 Requerimiento 2: incrementar la variable del for (incremento) al final de la ejecución
-
+Requerimiento 3: hacer do
+Requerimiento 4: hacer while
 */
 namespace Semantica
 {
@@ -477,21 +478,18 @@ namespace Semantica
         //For -> for(Asignacion Condicion; Incremento) BloqueInstruccones | Instruccion 
         private void For(bool evalua)
         {
-            //match("for");
-            //match("(");
-            //Asignacion(evalua);// despues de la asignacion salvar en el archivo la posicion y que vuelva a la posicion
-
-           // Console.WriteLine("Contador =", ccount);
-            int counttmp = ccount-4;
+            match("for");
+            match("(");
+            Asignacion(evalua);
+            int counttmp = ccount- 1 - valorVariable.Length;
             int lineatmp = linea;
             bool evaluafor = true;
             string variable = getContenido();
+            Console.WriteLine(variable);
             do
             {
-                Console.WriteLine("\n"+ ccount);
-                match("for");
-                match("(");
-                Asignacion(evalua);
+               
+                
 
                 evaluafor = Condicion() && evalua;
                 match(";");
@@ -511,10 +509,11 @@ namespace Semantica
                     modificaValor(variable, valorVariable(variable) + 1);
                     ccount = counttmp - variable.Length;
                     linea = lineatmp;
+                    Console.WriteLine(getContenido());
+                    archivo.DiscardBufferedData();
                     archivo.BaseStream.Seek(ccount, SeekOrigin.Begin);
                     nextToken();
-
-
+                    
                 }
             } while (evaluafor);
         }
