@@ -6,7 +6,7 @@ char c,d,e;
 void main()
 
 {
-    printf("ingrese el valor de d: " );
+    printf("ingrese el valor de d: ");
     scanf("%f",&d);
     printf("d =",d);
     if (1!=2)

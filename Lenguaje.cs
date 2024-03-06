@@ -422,8 +422,9 @@ namespace Semantica
         }
         //Condicion -> Expresion operadoRelacional Expresion
 
-        private bool Condicion(bool evalua)
+        private bool Condicion()
         {
+            bool evalua = true;
             Expresion(evalua);
             string operador = getContenido();//28 febrero
             match(Tipos.OperadorRelacional);
@@ -445,7 +446,7 @@ namespace Semantica
         {
             match("while");
             match("(");
-            Condicion(evalua);
+            Condicion();
             match(")");
             if (getContenido() == "{")
             {
@@ -470,7 +471,7 @@ namespace Semantica
             }
             match("while");
             match("(");
-            Condicion(evalua);
+            Condicion();
             match(")");
             match(";");
 
@@ -481,19 +482,18 @@ namespace Semantica
             match("for");
             match("(");
             Asignacion(evalua);
-            int counttmp = ccount- 1 - valorVariable.Length;
-            int lineatmp = linea;
-            bool evaluafor = true;
             string variable = getContenido();
             Console.WriteLine(variable);
+            int counttmp = ccount- 1 - variable.Length;
+            int lineatmp = linea;
+            bool evaluafor = true;
+           
+         
             do
             {
-               
-                
-
                 evaluafor = Condicion() && evalua;
                 match(";");
-                Incremento();//quitar el evalua
+                Incremento(evalua);//quitar el evalua
                 match(")");
 
                 if (getContenido() == "{")
@@ -518,7 +518,7 @@ namespace Semantica
             } while (evaluafor);
         }
         //Incremento -> Identificador ++ | --
-        private void Incremento()
+        private int Incremento(bool evalua)
         {
             string nombre = getContenido();
             bool incremento = false;
