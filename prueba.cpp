@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include <math.h>
-int altura,i,j;
-float x,y,z;
-char c,d,e;
-void main()
 
+int altura, j, i, contador,radio;
+float x, y, z;
+char c, d, e;
+
+void main()
 {
-    printf("ingrese el valor de d: ");
-    scanf("%f",&d);
-    printf("d =",d);
-    if (1!=2)
+
+    printf("mostrar numero\n");
+    scanf("%f", &d);
+    if (1 == 1)
     {
-        d++;
-        for ( e = 100; i==2; i++)
+        for (radio = 100; radio < 110; radio++)
         {
-           printf("e=",e);
+            printf("\nradio=", radio);
         }
-        
+        for (j = 0; j <= i; j++)
+        {
+            printf(".");
+        }
+        printf("\n");
     }
 }

@@ -37,7 +37,7 @@ namespace Semantica
             {
                 Variables();
             }
-            Main(true);
+            Main();
             imprimeVariables();
         }
         private void imprimeVariables()
@@ -233,12 +233,9 @@ namespace Semantica
             match("(");
 
             string cadena = getContenido();
-            Console.WriteLine(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"'));
+            Console.Write(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"'));
             match(Tipos.Cadena);
-            if (evalua)
-            {
-                Console.Write(cadena);
-            }
+
             if (getContenido() == ",")
             {
                 match(",");
@@ -252,7 +249,7 @@ namespace Semantica
                 {
                     if (evalua)
                     {
-                        Console.WriteLine(valorVariable(identificador));
+                        Console.Write(valorVariable(identificador)); // Utiliza Console.Write en lugar de WriteLine para evitar un salto de línea adicional
                     }
                 }
 
@@ -279,17 +276,14 @@ namespace Semantica
                 throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
             }
 
-            //Console.Write("Ingrese un valor para " + identificador + ": ");
+            // No imprimas un mensaje adicional antes de leer la entrada del usuario
             if (evalua)
             {
-                string valor = Console.ReadLine();
                 try
                 {
-
+                    string valor = Console.ReadLine();
                     float nuevoValor = float.Parse(valor);
                     modificaValor(identificador, nuevoValor);
-                    //match(")");
-                    //match(";");
                 }
                 catch (System.FormatException)
                 {
@@ -330,7 +324,7 @@ namespace Semantica
                 else if (operador == "+=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion(evalua);
+                    Expresion();
                     float valorIncremento = s.Pop();
                     valorActual += valorIncremento;
                     modificaValor(identificador, valorActual);
@@ -338,7 +332,7 @@ namespace Semantica
                 else if (operador == "-=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion(evalua);
+                    Expresion();
                     float valorIncremento = s.Pop();
                     valorActual -= valorIncremento;
                     modificaValor(identificador, valorActual);
@@ -353,7 +347,7 @@ namespace Semantica
                 if (operador == "*=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion(evalua);
+                    Expresion();
                     float valorfactor = s.Pop();
                     valorActual *= valorfactor;
                     modificaValor(identificador, valorActual);
@@ -361,7 +355,7 @@ namespace Semantica
                 else if (operador == "/=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion(evalua);
+                    Expresion();
                     float valorfactor = s.Pop();
                     valorActual /= valorfactor;
                     modificaValor(identificador, valorActual);
@@ -369,7 +363,7 @@ namespace Semantica
                 else if (operador == "%=")
                 {
                     float valorActual = valorVariable(identificador);
-                    Expresion(evalua);
+                    Expresion();
                     float valorfactor = s.Pop();
                     valorActual %= valorfactor;
                     modificaValor(identificador, valorActual);
@@ -379,7 +373,7 @@ namespace Semantica
             else
             {
                 match("=");
-                Expresion(evalua);
+                Expresion();
                 float nuevoValor = s.Pop();
                 modificaValor(identificador, nuevoValor);
             }
@@ -396,7 +390,7 @@ namespace Semantica
             match("(");
             bool evalua = Condicion() && evaluaif;
             match(")");
-            //Console.WriteLine(evalua);
+
             if (getContenido() == "{")
             {
 
@@ -424,11 +418,10 @@ namespace Semantica
 
         private bool Condicion()
         {
-            bool evalua = true;
-            Expresion(evalua);
+            Expresion();
             string operador = getContenido();//28 febrero
             match(Tipos.OperadorRelacional);
-            Expresion(evalua);
+            Expresion();
             float E2 = s.Pop();
             float E1 = s.Pop();
             switch (operador)
@@ -446,7 +439,7 @@ namespace Semantica
         {
             match("while");
             match("(");
-            Condicion();
+            evalua = Condicion() && evalua;
             match(")");
             if (getContenido() == "{")
             {
@@ -455,6 +448,10 @@ namespace Semantica
             else
             {
                 Instruccion(evalua);
+            }
+            if (evalua)
+            {
+
             }
         }
         //Do -> do bloqueInstrucciones | Intruccion while(Condicion);
@@ -481,21 +478,25 @@ namespace Semantica
         {
             match("for");
             match("(");
-            Asignacion(evalua);
+            
             string variable = getContenido();
-            Console.WriteLine(variable);
-            int counttmp = ccount- 1 - variable.Length;
+            
+            Asignacion(evalua);
+            int counttmp = ccount;
             int lineatmp = linea;
             bool evaluafor = true;
-           
-         
+
             do
             {
+                
                 evaluafor = Condicion() && evalua;
                 match(";");
-                Incremento(evalua);//quitar el evalua
-                match(")");
 
+               
+                Incremento(evalua);
+
+                
+                match(")");
                 if (getContenido() == "{")
                 {
                     bloqueInstrucciones(evaluafor);
@@ -507,62 +508,60 @@ namespace Semantica
                 if (evaluafor)
                 {
                     modificaValor(variable, valorVariable(variable) + 1);
-                    ccount = counttmp - variable.Length;
+                    ccount = counttmp;
                     linea = lineatmp;
-                    Console.WriteLine(getContenido());
-                    archivo.DiscardBufferedData();
                     archivo.BaseStream.Seek(ccount, SeekOrigin.Begin);
                     nextToken();
-                    
                 }
             } while (evaluafor);
         }
+
         //Incremento -> Identificador ++ | --
         private int Incremento(bool evalua)
         {
             string nombre = getContenido();
-            bool incremento = false;
+            string valor = getContenido();
             match(Tipos.Identificador);
             if (!existeVariable(nombre))
             {
                 throw new Error("de Sintaxis : la variable " + nombre + " no existe", log, linea);
             }
-            if (getClasificacion() == Tipos.IncrementoTermino)
+            if (getContenido() == "++")
             {
-                if (getContenido() == "++")
-                {
-                    incremento = true;
-                }
-                match(Tipos.IncrementoTermino);
-            }
-            if (incremento)
+                match("++");
                 return 1;
-            return -1;
+            }
+
+            else
+            {
+                match("--");
+                return -1;
+            }
         }
         //Main      -> void main() bloqueInstrucciones
-        private void Main(bool evalua)
+        private void Main()
         {
             match("void");
             match("main");
             match("(");
             match(")");
-            bloqueInstrucciones(evalua);
+            bloqueInstrucciones(true);
         }
         //Expresion -> Termino MasTermino
-        private void Expresion(bool evalua)
+        private void Expresion()
         {
-            Termino(evalua);
-            MasTermino(evalua);
+            Termino();
+            MasTermino();
         }
 
         // MasTermino -> (OperadorTermino Termino)?
-        private void MasTermino(bool evalua)
+        private void MasTermino()
         {
             if (getClasificacion() == Tipos.OperadorTermino)
             {
                 string operador = getContenido();
                 match(Tipos.OperadorTermino);
-                Termino(evalua);
+                Termino();
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
                 float N1 = s.Pop();
@@ -578,20 +577,20 @@ namespace Semantica
 
             }
         }
-        private void Termino(bool evalua)
+        private void Termino()
         {
-            Factor(evalua);
-            PorFactor(evalua);
+            Factor();
+            PorFactor();
 
         }
         // PorFactor -> (OperadorFactor Factor)?
-        private void PorFactor(bool evalua)
+        private void PorFactor()
         {
             if (getClasificacion() == Tipos.OperadorFactor)
             {
                 string operador = getContenido();
                 match(Tipos.OperadorFactor);
-                Factor(evalua);
+                Factor();
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
                 float N1 = s.Pop();
@@ -612,7 +611,7 @@ namespace Semantica
         }
 
         // Factor -> numero | identificador | (Expresion)
-        private void Factor(bool evalua)
+        private void Factor()
         {
             if (getClasificacion() == Tipos.Numero)
             {
@@ -640,7 +639,7 @@ namespace Semantica
                     string tipo = getContenido();
                     match(Tipos.tipoDatos);
                     match(")");
-                    Expresion(evalua);
+                    Expresion();
 
                     // Pop: sacar lo de la expresión, dividir lo del pop dependiendo del tipo de dato,
                     // luego el resultado meter nuevamente al stack
@@ -662,7 +661,7 @@ namespace Semantica
                 }
                 else
                 {
-                    Expresion(evalua);
+                    Expresion();
                     match(")");
                 }
             }

@@ -15,9 +15,13 @@ h = Identificador
 int = tipoDatos
 altura = Identificador
 , = Caracter
+j = Identificador
+, = Caracter
 i = Identificador
 , = Caracter
-j = Identificador
+contador = Identificador
+, = Caracter
+radio = Identificador
 ; = FinSentencia
 float = tipoDatos
 x = Identificador
@@ -40,7 +44,7 @@ main = Identificador
 { = Inicio
 printf = Identificador
 ( = Caracter
-"ingrese el valor de d: " = Cadena
+"mostrar numero\n" = Cadena
 ) = Caracter
 ; = FinSentencia
 scanf = Identificador
@@ -51,55 +55,37 @@ scanf = Identificador
 d = Identificador
 ) = Caracter
 ; = FinSentencia
-printf = Identificador
-( = Caracter
-"d =" = Cadena
-, = Caracter
-d = Identificador
-) = Caracter
-; = FinSentencia
 if = reservada
 ( = Caracter
 1 = Numero
-!= = OperadorRelacional
-2 = Numero
+== = OperadorRelacional
+1 = Numero
 ) = Caracter
 { = Inicio
-d = Identificador
-++ = IncrementoTermino
-; = FinSentencia
 for = reservada
 ( = Caracter
-e = Identificador
+radio = Identificador
 = = Asignacion
 100 = Numero
 ; = FinSentencia
-i = Identificador
-== = OperadorRelacional
-2 = Numero
+radio = Identificador
+< = OperadorRelacional
+110 = Numero
 ; = FinSentencia
-i = Identificador
+radio = Identificador
 ++ = IncrementoTermino
 ) = Caracter
 { = Inicio
 printf = Identificador
 ( = Caracter
-"e=" = Cadena
+"\nradio=" = Cadena
 , = Caracter
-e = Identificador
+radio = Identificador
 ) = Caracter
 ; = FinSentencia
 } = Fin
-} = Fin
-} = Fin
- = Fin
-Variables: 
-altura = Int = 0
-i = Int = 0
-j = Int = 0
-x = Float = 0
-y = Float = 0
-z = Float = 0
-c = Char = 0
-d = Char = 91
-e = Char = 100
+for = reservada
+( = Caracter
+j = Identificador
+= = Asignacion
+Error de Sintaxis: Se espera un )(=) en la linea 15
