@@ -1,25 +1,14 @@
 #include <stdio.h>
-#include <math.h>
+int contador;
+void main() {
+    
 
-int altura, j, i, contador,radio;
-float x, y, z;
-char c, d, e;
-
-void main()
-{
-
-    printf("mostrar numero\n");
-    scanf("%f", &d);
-    if (1 == 1)
+    if(1!=2)
     {
-        for (radio = 100; radio < 110; radio++)
-        {
-            printf("\nradio=", radio);
-        }
-        for (j = 0; j <= i; j++)
-        {
-            printf(".");
-        }
-        printf("\n");
+        printf("Hola mundo");
+    }
+    else
+    {
+        printf("Adios mundo");
     }
 }

@@ -4,11 +4,11 @@ using System.Formats.Tar;
 using System.Linq;
 using System.Threading.Tasks;
 
-/*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	
+/*Requerimento 1:evalua el else así como el if, do 40 puntos, while con 40 puntos	|| IF Y ELSE SE IMPRIMEN JUNTOS =N0
 como regresar en el archivo de texto para verificar las iteraciones
-Requerimiento 2: incrementar la variable del for (incremento) al final de la ejecución
-Requerimiento 3: hacer do
-Requerimiento 4: hacer while
+Requerimiento 2: incrementar la variable del for (incremento) al final de la ejecución|| HACE UNO DE MAS
+Requerimiento 3: hacer do||listo
+Requerimiento 4: hacer while|listo
 */
 namespace Semantica
 {
@@ -249,7 +249,7 @@ namespace Semantica
                 {
                     if (evalua)
                     {
-                        Console.Write(valorVariable(identificador)); // Utiliza Console.Write en lugar de WriteLine para evitar un salto de línea adicional
+                        Console.WriteLine(valorVariable(identificador)); // Utiliza Console.Write en lugar de WriteLine para evitar un salto de línea adicional
                     }
                 }
 
@@ -385,35 +385,56 @@ namespace Semantica
         //If -> if (Condicion) instruccion | bloqueInstrucciones 
         //      (else instruccion | bloqueInstrucciones)?
         private void If(bool evaluaif)
-        {//modificacion 28 de febrero
+        {
             match("if");
             match("(");
             bool evalua = Condicion() && evaluaif;
             match(")");
 
-            if (getContenido() == "{")
+            switch (getContenido())
             {
-
-                bloqueInstrucciones(evalua);
-
+                case "{":
+                    bloqueInstrucciones(evalua);
+                    break;
+                default:
+                    Instruccion(evalua);
+                    if (evalua)
+                    {
+                        Console.WriteLine("Valor de evalua: " + evalua);
+                    }
+                    break;
             }
-            else
-            {
-                Instruccion(evalua);
-            }
+
             if (getContenido() == "else")
             {
                 match("else");
-                if (getContenido() == "{")
+                if (evalua)
                 {
-                    bloqueInstrucciones(evalua);
+                    switch (getContenido())
+                    {
+                        case "{":
+                            bloqueInstrucciones(true);
+                            break;
+                        default:
+                            Instruccion(true);
+                            break;
+                    }
                 }
                 else
                 {
-                    Instruccion(evalua);
+                    switch (getContenido())
+                    {
+                        case "{":
+                            bloqueInstrucciones(false);
+                            break;
+                        default:
+                            Instruccion(false);
+                            break;
+                    }
                 }
             }
         }
+
         //Condicion -> Expresion operadoRelacional Expresion
 
         private bool Condicion()
@@ -435,67 +456,90 @@ namespace Semantica
             }
         }
         //While -> while(Condicion) bloqueInstrucciones | Instruccion
-        private void While(bool evalua)
+        private void While(bool evaluawhile)
         {
             match("while");
             match("(");
-            evalua = Condicion() && evalua;
-            match(")");
-            if (getContenido() == "{")
-            {
-                bloqueInstrucciones(evalua);
-            }
-            else
-            {
-                Instruccion(evalua);
-            }
-            if (evalua)
-            {
+            bool evalua = true;
+            int counttmp = ccontar - 1;
 
-            }
+            do
+            {
+                evalua = Condicion() && evaluawhile;
+                match(")");
+
+                switch (getContenido())
+                {
+                    case "{":
+                        bloqueInstrucciones(evalua);
+                        break;
+                    default:
+                        Instruccion(evalua);
+                        break;
+                }
+
+                if (evalua)
+                {
+                    ccontar = counttmp;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(counttmp, SeekOrigin.Begin);
+                    nextToken();
+                }
+
+            } while (evalua);
         }
+
         //Do -> do bloqueInstrucciones | Intruccion while(Condicion);
-        private void Do(bool evalua)
+        private void Do(bool evaluado)
         {
             match("do");
-            if (getContenido() == "{")
+            bool evalua = true;
+            int counttmp = ccontar - 1;
+            do
             {
-                bloqueInstrucciones(evalua);
-            }
-            else
-            {
-                Instruccion(evalua);
-            }
-            match("while");
-            match("(");
-            Condicion();
-            match(")");
-            match(";");
+                switch (getContenido())
+                {
+                    case "{":
+                        bloqueInstrucciones(evalua);
+                        break;
+                    default:
+                        Instruccion(evalua);
+                        break;
+                }
 
+                match("while");
+                match("(");
+                evalua = Condicion() && evaluado;
+                match(")");
+                match(";");
+
+                if (evalua)
+                {
+                    ccontar = counttmp;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(counttmp, SeekOrigin.Begin);
+                    nextToken();
+                }
+
+            } while (evalua);
         }
         //For -> for(Asignacion Condicion; Incremento) BloqueInstruccones | Instruccion 
         private void For(bool evalua)
         {
             match("for");
             match("(");
-            
-            string variable = getContenido();
-            
             Asignacion(evalua);
-            int counttmp = ccount;
-            int lineatmp = linea;
+            string variable = getContenido();
+            string operador = getContenido();
             bool evaluafor = true;
-
+            int counttmp = ccontar - 1;
+            int lineatmp = linea;
             do
             {
-                
+
                 evaluafor = Condicion() && evalua;
                 match(";");
-
-               
-                Incremento(evalua);
-
-                
+                Incremento(evaluafor);
                 match(")");
                 if (getContenido() == "{")
                 {
@@ -507,12 +551,14 @@ namespace Semantica
                 }
                 if (evaluafor)
                 {
-                    modificaValor(variable, valorVariable(variable) + 1);
-                    ccount = counttmp;
+                    ccontar = counttmp - variable.Length;
                     linea = lineatmp;
-                    archivo.BaseStream.Seek(ccount, SeekOrigin.Begin);
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(ccontar, SeekOrigin.Begin);
                     nextToken();
+                    modificaValor(variable, valorVariable(variable) + 1);
                 }
+
             } while (evaluafor);
         }
 
