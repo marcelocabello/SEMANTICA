@@ -390,47 +390,28 @@ namespace Semantica
             match("(");
             bool evalua = Condicion() && evaluaif;
             match(")");
-
-            switch (getContenido())
+            if (getContenido() == "{")
             {
-                case "{":
-                    bloqueInstrucciones(evalua);
-                    break;
-                default:
-                    Instruccion(evalua);
-                    if (evalua)
-                    {
-                        Console.WriteLine("Valor de evalua: " + evalua);
-                    }
-                    break;
+                bloqueInstrucciones(evalua);
             }
-
+            else
+            {
+                Instruccion(evalua);
+            }
             if (getContenido() == "else")
             {
                 match("else");
-                if (evalua)
+                if (getContenido() == "if")
                 {
-                    switch (getContenido())
-                    {
-                        case "{":
-                            bloqueInstrucciones(true);
-                            break;
-                        default:
-                            Instruccion(true);
-                            break;
-                    }
+                    If(!evalua);
+                }
+                else if (getContenido() == "{")
+                {
+            bloqueInstrucciones(!evalua);
                 }
                 else
                 {
-                    switch (getContenido())
-                    {
-                        case "{":
-                            bloqueInstrucciones(false);
-                            break;
-                        default:
-                            Instruccion(false);
-                            break;
-                    }
+                    Instruccion(!evalua);
                 }
             }
         }
