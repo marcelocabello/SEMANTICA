@@ -60,4 +60,30 @@ j = Identificador
 0 = Numero
 ) = Caracter
 { = Inicio
-Error de Sintaxis: Se espera un Identificador en la linea 13
+printf = Identificador
+( = Caracter
+"j no puede ser 0\n" = Cadena
+) = Caracter
+; = FinSentencia
+} = Fin
+else = reservada
+{ = Inicio
+printf = Identificador
+( = Caracter
+"j tiene que ser 0\n" = Cadena
+) = Caracter
+; = FinSentencia
+} = Fin
+} = Fin
+ = Fin
+Variables: 
+radio = Int = 0
+altura = Int = 0
+i = Int = 0
+j = Int = 0
+x = Float = 0
+y = Float = 0
+z = Float = 0
+c = Char = 0
+d = Char = 0
+e = Char = 0

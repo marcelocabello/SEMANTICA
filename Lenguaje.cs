@@ -389,27 +389,26 @@ namespace Semantica
         //      (else instruccion | bloqueInstrucciones)?
         private void If(bool evaluaif)
         {
-            string contenido = getContenido();
             match("if");
             match("(");
             bool evalua = Condicion() && evaluaif;
             match(")");
-            if (contenido  == "{")
+            if (getContenido() == "{")
             {
-                bloqueInstrucciones(evalua);
+                bloqueInstrucciones(evalua==true);
             }
             else
             {
-                Instruccion(evalua);
+                Instruccion(evalua==true);
             }
-            if (contenido  == "else")
+            if (getContenido() == "else")
             {
                 match("else");
-                if (contenido == "if")
+                if (getContenido() == "if")
                 {
                     If(evaluaif==false);
                 }
-                else if (contenido == "{")
+                else if (getContenido() == "{")
                 {
                     bloqueInstrucciones(evalua==false);
                 }

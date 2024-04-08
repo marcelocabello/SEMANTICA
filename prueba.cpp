@@ -15,6 +15,6 @@ void main()
     }
     else
     {
-        printf("j tiene que ser 0");
+        printf("j tiene que ser 0\n");
     }
 }
