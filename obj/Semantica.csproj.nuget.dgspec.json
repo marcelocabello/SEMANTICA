@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marce\\Documents\\LYA2\\Semantica\\SEMANTICA\\Semantica.csproj": {}
+    "/home/olecram/Documentos/SEMANTICA/SEMANTICA/Semantica.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marce\\Documents\\LYA2\\Semantica\\SEMANTICA\\Semantica.csproj": {
+    "/home/olecram/Documentos/SEMANTICA/SEMANTICA/Semantica.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marce\\Documents\\LYA2\\Semantica\\SEMANTICA\\Semantica.csproj",
+        "projectUniqueName": "/home/olecram/Documentos/SEMANTICA/SEMANTICA/Semantica.csproj",
         "projectName": "Semantica",
-        "projectPath": "C:\\Users\\marce\\Documents\\LYA2\\Semantica\\SEMANTICA\\Semantica.csproj",
-        "packagesPath": "C:\\Users\\marce\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marce\\Documents\\LYA2\\Semantica\\SEMANTICA\\obj\\",
+        "projectPath": "/home/olecram/Documentos/SEMANTICA/SEMANTICA/Semantica.csproj",
+        "packagesPath": "/home/olecram/.nuget/packages/",
+        "outputPath": "/home/olecram/Documentos/SEMANTICA/SEMANTICA/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\marce\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/olecram/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -53,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

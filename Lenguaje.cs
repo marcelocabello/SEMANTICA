@@ -233,26 +233,31 @@ namespace Semantica
             match("(");
 
             string cadena = getContenido();
-            Console.Write(cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"'));
+            cadena = cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"');
             match(Tipos.Cadena);
 
             if (getContenido() == ",")
             {
                 match(",");
                 string identificador = getContenido();
-                match(Tipos.Identificador);//1
-                if (!existeVariable(identificador))
+                match(Tipos.Identificador);
+
+                if (cadena.Contains("%"))
                 {
-                    throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
-                }
-                else
-                {
-                    if (evalua)
-                    {
-                        Console.WriteLine(valorVariable(identificador)); // Utiliza Console.Write en lugar de WriteLine para evitar un salto de línea adicional
-                    }
+                    cadena = cadena.Replace("%f", valorVariable(identificador).ToString());
+                    cadena = cadena.Replace("%d", valorVariable(identificador).ToString());
+                    cadena = cadena.Replace("%s", valorVariable(identificador).ToString()); 
                 }
 
+                if(!existeVariable(identificador))
+                {
+                    throw new Error("Sintaxis: La variable " + identificador + " no existe", log, linea);
+                }
+            }
+
+            if (evalua)
+            {
+                Console.WriteLine(cadena);
             }
 
             match(")");
@@ -403,11 +408,11 @@ namespace Semantica
                 match("else");
                 if (getContenido() == "if")
                 {
-                    If(!evalua);
+                    If(!evaluaif);
                 }
                 else if (getContenido() == "{")
                 {
-            bloqueInstrucciones(!evalua);
+                    bloqueInstrucciones(!evalua);
                 }
                 else
                 {
@@ -538,6 +543,8 @@ namespace Semantica
                     archivo.BaseStream.Seek(ccontar, SeekOrigin.Begin);
                     nextToken();
                     modificaValor(variable, valorVariable(variable) + 1);
+
+
                 }
 
             } while (evaluafor);
@@ -547,7 +554,7 @@ namespace Semantica
         private int Incremento(bool evalua)
         {
             string nombre = getContenido();
-            string valor = getContenido();
+            string valorinc = getContenido();
             match(Tipos.Identificador);
             if (!existeVariable(nombre))
             {
