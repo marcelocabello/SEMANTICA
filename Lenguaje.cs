@@ -241,17 +241,15 @@ namespace Semantica
                 match(",");
                 string identificador = getContenido();
                 match(Tipos.Identificador);
-
+                if (!existeVariable(identificador))
+                {
+                    throw new Error("de Sintaxis : la variable " + identificador + " no existe", log, linea);
+                }
                 if (cadena.Contains("%"))
                 {
                     cadena = cadena.Replace("%f", valorVariable(identificador).ToString());
                     cadena = cadena.Replace("%d", valorVariable(identificador).ToString());
-                    cadena = cadena.Replace("%s", valorVariable(identificador).ToString()); 
-                }
-
-                if(!existeVariable(identificador))
-                {
-                    throw new Error("Sintaxis: La variable " + identificador + " no existe", log, linea);
+                    cadena = cadena.Replace("%s", valorVariable(identificador).ToString());
                 }
             }
 
@@ -391,11 +389,12 @@ namespace Semantica
         //      (else instruccion | bloqueInstrucciones)?
         private void If(bool evaluaif)
         {
+            string contenido = getContenido();
             match("if");
             match("(");
             bool evalua = Condicion() && evaluaif;
             match(")");
-            if (getContenido() == "{")
+            if (contenido  == "{")
             {
                 bloqueInstrucciones(evalua);
             }
@@ -403,20 +402,20 @@ namespace Semantica
             {
                 Instruccion(evalua);
             }
-            if (getContenido() == "else")
+            if (contenido  == "else")
             {
                 match("else");
-                if (getContenido() == "if")
+                if (contenido == "if")
                 {
-                    If(!evaluaif);
+                    If(evaluaif==false);
                 }
-                else if (getContenido() == "{")
+                else if (contenido == "{")
                 {
-                    bloqueInstrucciones(!evalua);
+                    bloqueInstrucciones(evalua==false);
                 }
                 else
                 {
-                    Instruccion(!evalua);
+                    Instruccion(evalua==false);
                 }
             }
         }
