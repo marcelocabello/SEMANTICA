@@ -446,19 +446,20 @@ namespace Semantica
             match("(");
             bool evalua = true;
             int counttmp = ccontar - 1;
+            string contenido = getContenido();
 
             do
             {
                 evalua = Condicion() && evaluawhile;
                 match(")");
 
-                switch (getContenido())
+                switch (contenido)
                 {
                     case "{":
-                        bloqueInstrucciones(evalua);
+                        bloqueInstrucciones(true);
                         break;
                     default:
-                        Instruccion(evalua);
+                        Instruccion(true);
                         break;
                 }
 
@@ -479,15 +480,16 @@ namespace Semantica
             match("do");
             bool evalua = true;
             int counttmp = ccontar - 1;
+            string contenido = getContenido();
             do
             {
-                switch (getContenido())
+                switch (contenido)
                 {
                     case "{":
-                        bloqueInstrucciones(evalua);
+                        bloqueInstrucciones(true);
                         break;
                     default:
-                        Instruccion(evalua);
+                        Instruccion(true);
                         break;
                 }
 
@@ -514,7 +516,6 @@ namespace Semantica
             match("(");
             Asignacion(evalua);
             string variable = getContenido();
-            string operador = getContenido();
             bool evaluafor = true;
             int counttmp = ccontar - 1;
             int lineatmp = linea;
@@ -552,7 +553,7 @@ namespace Semantica
         private int Incremento(bool evalua)
         {
             string nombre = getContenido();
-            string valorinc = getContenido();
+            
             match(Tipos.Identificador);
             if (!existeVariable(nombre))
             {
@@ -701,4 +702,3 @@ namespace Semantica
 
     }
 }
-

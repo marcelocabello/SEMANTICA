@@ -20,6 +20,8 @@ altura = Identificador
 i = Identificador
 , = Caracter
 j = Identificador
+, = Caracter
+suma = Identificador
 ; = FinSentencia
 float = tipoDatos
 x = Identificador
@@ -40,47 +42,77 @@ main = Identificador
 ( = Caracter
 ) = Caracter
 { = Inicio
-printf = Identificador
-( = Caracter
-"dame el valor de j\t" = Cadena
-) = Caracter
-; = FinSentencia
-scanf = Identificador
-( = Caracter
-"%d" = Cadena
-, = Caracter
-& = Caracter
-j = Identificador
-) = Caracter
-; = FinSentencia
-if = reservada
-( = Caracter
-j = Identificador
-== = OperadorRelacional
+i = Identificador
+= = Asignacion
 0 = Numero
-) = Caracter
+; = FinSentencia
+do = reservada
 { = Inicio
-printf = Identificador
-( = Caracter
-"j no puede ser 0\n" = Cadena
-) = Caracter
+i = Identificador
+++ = IncrementoTermino
 ; = FinSentencia
 } = Fin
-else = reservada
-{ = Inicio
-printf = Identificador
+while = reservada
 ( = Caracter
-"j tiene que ser 0\n" = Cadena
+i = Identificador
+<= = OperadorRelacional
+3 = Numero
 ) = Caracter
 ; = FinSentencia
+printf = Identificador
+{ = Inicio
+i = Identificador
+++ = IncrementoTermino
+; = FinSentencia
 } = Fin
+while = reservada
+( = Caracter
+i = Identificador
+<= = OperadorRelacional
+3 = Numero
+) = Caracter
+; = FinSentencia
+printf = Identificador
+{ = Inicio
+i = Identificador
+++ = IncrementoTermino
+; = FinSentencia
+} = Fin
+while = reservada
+( = Caracter
+i = Identificador
+<= = OperadorRelacional
+3 = Numero
+) = Caracter
+; = FinSentencia
+printf = Identificador
+{ = Inicio
+i = Identificador
+++ = IncrementoTermino
+; = FinSentencia
+} = Fin
+while = reservada
+( = Caracter
+i = Identificador
+<= = OperadorRelacional
+3 = Numero
+) = Caracter
+; = FinSentencia
+printf = Identificador
+( = Caracter
+"La suma de los números del 1 al 10 es: %d\n" = Cadena
+, = Caracter
+i = Identificador
+) = Caracter
+; = FinSentencia
 } = Fin
  = Fin
 Variables: 
 radio = Int = 0
 altura = Int = 0
-i = Int = 0
+i = Int = 4
 j = Int = 0
+suma = Int = 0
 x = Float = 0
 y = Float = 0
 z = Float = 0
