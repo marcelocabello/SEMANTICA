@@ -13,6 +13,7 @@ namespace Semantica
         protected int linea;
         protected StreamReader archivo;
         protected StreamWriter log;
+        protected StreamWriter asm;
 
         protected int ccontar;//con este
 
@@ -59,11 +60,19 @@ namespace Semantica
 
         public Lexico()
         {
-            archivo = new StreamReader("prueba.cpp");
             log = new StreamWriter("prueba.log");
             log.AutoFlush = true;
+            asm = new StreamWriter("suma.asm");
+            asm.AutoFlush = true;
             linea = 1;
             ccontar = 0;//este
+            log.WriteLine("ANALIZADOR LEXICO");
+            log.WriteLine("AUTOR: CABELLO GOMEZ MARCELO");
+            if (!File.Exists("prueba.cpp"))
+            {
+                throw new Error("No se encontro el archivo de entrada", log, linea);
+            }
+            archivo = new StreamReader("prueba.cpp");
         }
         public Lexico(string nombre)
         {
