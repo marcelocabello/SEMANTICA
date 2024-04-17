@@ -56,6 +56,8 @@ if = reservada
 pi = Identificador
 = = Asignacion
 2 = Numero
++ = OperadorTermino
+3 = Numero
 ; = FinSentencia
 } = Fin
 } = Fin
@@ -63,4 +65,4 @@ pi = Identificador
 Variables: 
 x = Char = 0
 radio = Int = 61
-pi = Float = 2
+pi = Float = 5

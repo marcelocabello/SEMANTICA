@@ -18,17 +18,18 @@ namespace Semantica
         List<Variable> variables;
         Stack<float> s;
         int countIF;
+        int countDO;
         public Lenguaje()
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF = 0;
+            countIF = countDO=0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF = 0;
+            countIF =countDO= 0;
         }
         //Programa  -> Librerias? Variables? Main
         public void Programa()
