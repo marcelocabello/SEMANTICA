@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 /*Requerimento 1:COLOCAR EL TIPO DE DATO EN ASM DEPDENDINENDO DEL TIPO DE DATO DE LA VARIABLE
-Requerimiento 2: 
+Requerimiento 2: cambiar todo a nasm
 Requerimiento 3: 
 Requerimiento 4: 
 COMPLETAR FOR Y ARREGLAR if,else
@@ -23,13 +23,13 @@ namespace Semantica
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF = countDO=0;
+            countIF = countDO = 0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF =countDO= 0;
+            countIF = countDO = 0;
         }
         //Programa  -> Librerias? Variables? Main
         public void Programa()
@@ -42,7 +42,9 @@ namespace Semantica
             {
                 Variables();
             }
-            asm.WriteLine("org 100h");
+            asm.WriteLine("section .text");
+            asm.WriteLine("\t global _start");
+            asm.WriteLine("\n_start:");
             Main();
             asm.WriteLine("ret");
             imprimeVariables();
@@ -50,6 +52,7 @@ namespace Semantica
         private void imprimeVariables()
         {
             log.WriteLine("Variables: ");
+            asm.WriteLine("section .data");
             asm.WriteLine("; VARIABLES");
             foreach (Variable v in variables)
             {
@@ -331,12 +334,14 @@ namespace Semantica
                     float valorActual = valorVariable(identificador);
                     valorActual++;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("inc dword [" + identificador + "]");
                 }
                 else if (operador == "--")
                 {
                     float valorActual = valorVariable(identificador);
                     valorActual--;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("dec dword [" + identificador + "]");
                 }
                 else if (operador == "+=")
                 {
@@ -345,6 +350,8 @@ namespace Semantica
                     float valorIncremento = s.Pop();
                     valorActual += valorIncremento;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("pop eax");
+                    asm.WriteLine("add [" + identificador + "],eax");
                 }
                 else if (operador == "-=")
                 {
@@ -353,6 +360,8 @@ namespace Semantica
                     float valorIncremento = s.Pop();
                     valorActual -= valorIncremento;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("pop eax");
+                    asm.WriteLine("sub [" + identificador + "],eax");
                 }
                 //modifica valor agregar al final, aqui para optimizar
 
@@ -369,6 +378,10 @@ namespace Semantica
                     float valorfactor = s.Pop();
                     valorActual *= valorfactor;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("pop ebx");
+                    asm.WriteLine("mov ebx,[" + identificador+ "]");
+                    asm.WriteLine("mul ebx");
+                    asm.WriteLine("mov [" + identificador + "], eax");
                 }
                 else if (operador == "/=")
                 {
@@ -377,6 +390,10 @@ namespace Semantica
                     float valorfactor = s.Pop();
                     valorActual /= valorfactor;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("pop ebx");
+                    asm.WriteLine("mov ebx, [" + identificador+ "]");
+                    asm.WriteLine("div ebx");
+                    asm.WriteLine("mov [" + identificador + "], eax");
                 }
                 else if (operador == "%=")
                 {
@@ -385,6 +402,10 @@ namespace Semantica
                     float valorfactor = s.Pop();
                     valorActual %= valorfactor;
                     modificaValor(identificador, valorActual);
+                    asm.WriteLine("pop ebx");
+                    asm.WriteLine("mov eax, [" + identificador+ "]");
+                    asm.WriteLine("div ebx");
+                    asm.WriteLine("mov [" + identificador + "], edx");
                 }
                 //mover modifica afuera para poner if evalua como el profe
             }
@@ -394,9 +415,9 @@ namespace Semantica
                 Expresion();
                 float nuevoValor = s.Pop();
                 modificaValor(identificador, nuevoValor);
-                asm.WriteLine("POP AX");
+                asm.WriteLine("pop eax");
             }
-            asm.WriteLine("MOV " + identificador + ", AX");
+            asm.WriteLine("mov [" + identificador + "], eax");
 
             match(";");
         }
@@ -408,7 +429,7 @@ namespace Semantica
         {
             match("if");
             match("(");
-            string etiqueta = "EtiquetaIF" + (++countIF);
+            string etiqueta = "EtiquetaIF" + (++countIF)+":";
             bool evalua = Condicion(etiqueta) && evaluaif;
             match(")");
             if (getContenido() == "{")
@@ -443,29 +464,29 @@ namespace Semantica
             match(Tipos.OperadorRelacional);
             Expresion();
             float E2 = s.Pop();
-            asm.WriteLine("POP BX");
+            asm.WriteLine("pop ebx");
             float E1 = s.Pop();
-            asm.WriteLine("POP AX");
-            asm.WriteLine("CMP AX, BX");
+            asm.WriteLine("pop ebx");
+            asm.WriteLine("cmp eax, ebx");
             switch (operador)
             {
                 case ">":
-                    asm.WriteLine("JLE " + etiqueta);
+                    asm.WriteLine("jle " + etiqueta);
                     return E1 > E2; //el mismo operador regresa falso o verdadero en lugar de usar if
                 case ">=":
-                    asm.WriteLine("JL " + etiqueta);
+                    asm.WriteLine("jl " + etiqueta);
                     return E1 >= E2;
                 case "<":
-                    asm.WriteLine("JGE " + etiqueta);
+                    asm.WriteLine("jge " + etiqueta);
                     return E1 < E2;
                 case "<=":
-                    asm.WriteLine("JG " + etiqueta);
+                    asm.WriteLine("jg " + etiqueta);
                     return E1 <= E2;
                 case "==":
-                    asm.WriteLine("JNE " + etiqueta);
+                    asm.WriteLine("jne " + etiqueta);
                     return E1 == E2;
                 default:
-                    asm.WriteLine("JE " + etiqueta);
+                    asm.WriteLine("je " + etiqueta);
                     return E1 != E2;
             }
         }
@@ -507,6 +528,8 @@ namespace Semantica
         //Do -> do bloqueInstrucciones | Intruccion while(Condicion);
         private void Do(bool evaluado)
         {
+            string etiqueta = "EtiquetaDO" + (++countDO);
+            asm.WriteLine(etiqueta + ":");
             match("do");
             bool evalua = true;
             int counttmp = ccontar - 1;
@@ -525,7 +548,7 @@ namespace Semantica
 
                 match("while");
                 match("(");
-                evalua = Condicion("") && evaluado;
+                evalua = Condicion(etiqueta) && evaluado;
                 match(")");
                 match(";");
 
@@ -627,19 +650,19 @@ namespace Semantica
                 Termino();
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
-                asm.WriteLine("POP BX");
+                asm.WriteLine("pop ebx");
                 float N1 = s.Pop();
-                asm.WriteLine("POP AX");
+                asm.WriteLine("pop eax");
                 switch (operador)
                 {
                     case "+":
-                        asm.WriteLine("ADD AX, BX");
-                        asm.WriteLine("PUSH AX");
+                        asm.WriteLine("add eax, eax");
+                        asm.WriteLine("push ebx");
                         s.Push(N1 + N2);
                         break;
                     case "-":
-                        asm.WriteLine("SUB AX, BX");
-                        asm.WriteLine("PUSH AX");
+                        asm.WriteLine("sub eax, ebx");
+                        asm.WriteLine("push eax");
                         s.Push(N1 - N2);
                         break;
                 }
@@ -662,24 +685,24 @@ namespace Semantica
                 Factor();
                 // Realizar la operación correspondiente
                 float N2 = s.Pop();
-                asm.WriteLine("POP BX");
+                asm.WriteLine("pop ebx");
                 float N1 = s.Pop();
-                asm.WriteLine("POP AX");
+                asm.WriteLine("pop eax");
                 switch (operador)
                 {
                     case "*":
-                        asm.WriteLine("MUL BX");
-                        asm.WriteLine("PUSH AX");
+                        asm.WriteLine("mul ebx");
+                        asm.WriteLine("push eax");
                         s.Push(N1 * N2);
                         break;
                     case "/":
-                        asm.WriteLine("DIV BX");
-                        asm.WriteLine("PUSH AX");
+                        asm.WriteLine("div ebx");
+                        asm.WriteLine("push eax");
                         s.Push(N1 / N2);
                         break;
                     case "%":
-                        asm.WriteLine("DIV BX");
-                        asm.WriteLine("PUSH DX");
+                        asm.WriteLine("div ebx");
+                        asm.WriteLine("push edx");
                         s.Push(N1 % N2);
                         break;
                 }
@@ -694,8 +717,8 @@ namespace Semantica
             {
                 //Console.Write(getContenido());
                 //s.Push(float.Parse(getContenido()));
-                asm.WriteLine("MOV AX, " + getContenido());
-                asm.WriteLine("PUSH AX");
+                asm.WriteLine("mov eax, [" + getContenido()+"]");
+                asm.WriteLine("push eax");
                 s.Push(float.Parse(getContenido())); // Se agregó esta línea
                 match(Tipos.Numero);
             }
@@ -737,8 +760,8 @@ namespace Semantica
                                 s.Push(s.Pop());
                                 break;*/
                     }
-                    asm.WriteLine("MOV AX" + valorCaster);
-                    asm.WriteLine("PUSH AX");
+                    asm.WriteLine("mov eax,[" + valorCaster+ "]");
+                    asm.WriteLine("push eax");
                     s.Push(valorCaster);
 
 

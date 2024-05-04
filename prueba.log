@@ -48,16 +48,29 @@ radio = Identificador
 ; = FinSentencia
 if = reservada
 ( = Caracter
-1 = Numero
-== = OperadorRelacional
-2 = Numero
+radio = Identificador
+> = OperadorRelacional
+10 = Numero
 ) = Caracter
+{ = Inicio
+do = reservada
 { = Inicio
 pi = Identificador
 = = Asignacion
-2 = Numero
+pi = Identificador
 + = OperadorTermino
-3 = Numero
+1 = Numero
+; = FinSentencia
+pi = Identificador
+++ = IncrementoTermino
+; = FinSentencia
+} = Fin
+while = reservada
+( = Caracter
+pi = Identificador
+> = OperadorRelacional
+10 = Numero
+) = Caracter
 ; = FinSentencia
 } = Fin
 } = Fin
@@ -65,4 +78,4 @@ pi = Identificador
 Variables: 
 x = Char = 0
 radio = Int = 61
-pi = Float = 5
+pi = Float = 2

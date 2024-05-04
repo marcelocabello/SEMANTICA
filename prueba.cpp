@@ -16,8 +16,13 @@ void main()
     }
     }*/
     radio=(3+5)*8-(10-4)/2;
-    if(1==2)
+    if(radio>10)
     {
-        pi=2+3;
+       do
+       {
+        pi=pi+1;
+        pi++;
+
+       }while(pi>10);
     }
 }
