@@ -17,19 +17,28 @@ namespace Semantica
     {
         List<Variable> variables;
         Stack<float> s;
+
         int countIF;
         int countDO;
+
+        int str_msg;
+        int str_num;
+        int ifct;
+        int whilect;
+        int doct;
+        int forct;
+
         public Lenguaje()
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF = countDO = 0;
+            ifct=whilect=doct=forct=str_num = str_msg = countIF = countDO = 0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
             variables = new List<Variable>();
             s = new Stack<float>();
-            countIF = countDO = 0;
+            ifct=whilect=doct=forct=str_num = str_msg = countIF = countDO = 0;
         }
         //Programa  -> Librerias? Variables? Main
         public void Programa()
@@ -42,22 +51,44 @@ namespace Semantica
             {
                 Variables();
             }
+            asm.WriteLine("section .data:");
+            
+            imprimeVariables();
             asm.WriteLine("section .text");
             asm.WriteLine("\t global _start");
-            asm.WriteLine("\n_start:");
+            asm.WriteLine("\n_start:\n");
+
             Main();
-            asm.WriteLine("ret");
-            imprimeVariables();
+            //asm.WriteLine("ret");
+            //imprimeVariables();
+            Finasm();
+        }
+        private void Finasm()
+        {
+            asm.WriteLine(";FIN PROGRAMA:");
+            asm.WriteLine("\nmov eax, 1");
+            asm.WriteLine("xor ebx, ebx ");
+            asm.WriteLine("int 0x80");
         }
         private void imprimeVariables()
         {
             log.WriteLine("Variables: ");
-            asm.WriteLine("section .data");
             asm.WriteLine("; VARIABLES");
             foreach (Variable v in variables)
             {
                 log.WriteLine(v.getNombre() + " = " + v.getTipo() + " = " + v.getValor());
-                asm.WriteLine(v.getNombre() + " dw 0");
+                switch (v.getTipo())
+                {
+                    case Variable.TipoDato.Char:
+                        asm.WriteLine(v.getNombre() + " db 0");
+                        break;
+                    case Variable.TipoDato.Int:
+                        asm.WriteLine(v.getNombre() + " dw 0");
+                        break;
+                    case Variable.TipoDato.Float:
+                        asm.WriteLine(v.getNombre() + " dd 0");
+                        break;
+                }
             }
         }
         private void imprimeStack()
@@ -241,11 +272,15 @@ namespace Semantica
 
         private void Printf(bool evalua)
         {
+
+            asm.WriteLine(";MENSAJE " + (++str_msg) + ": ");
+
             match("printf");
             match("(");
-
             string cadena = getContenido();
+            string mensaje = "str_msg" + str_msg;
             cadena = cadena.Replace("\\n", "\n").Replace("\\t", "\t").Trim('"');
+            //asm.WriteLine(mensaje + " db '" + cadena + "', 0xA, 0");
             match(Tipos.Cadena);
 
             if (getContenido() == ",")
@@ -274,6 +309,12 @@ namespace Semantica
             {
                 Console.Write(cadena);
             }
+            string str_mensaje = "str_msg";
+            asm.WriteLine("\nmov eax, 4 ");
+            asm.WriteLine("mov ebx, 1 ");
+            asm.WriteLine("lea ecx, [" + str_mensaje + str_msg + "]");
+            asm.WriteLine("mov edx, " + cadena.Length);
+            asm.WriteLine("int 0x80\n");
 
             match(")");
             match(";");
@@ -282,6 +323,7 @@ namespace Semantica
         // Requerimiento 2: Scanf -> scanf(cadena,&Identificador);
         private void Scanf(bool evalua)
         {
+            asm.WriteLine(";LECTURA " + (++str_num) + ": ");
             match("scanf");
             match("(");
             match(Tipos.Cadena);
@@ -289,6 +331,8 @@ namespace Semantica
             match("&");
 
             string identificador = getContenido();
+            string cadena = getContenido();
+            string mensaje = "str_msg" + str_num;
             match(Tipos.Identificador);//1
 
             if (!existeVariable(identificador))
@@ -310,6 +354,15 @@ namespace Semantica
                     throw new Error("Sintaxis: el valor ingresado no es un número válido", log, linea);
                 }
             }
+            asm.WriteLine("\nmov eax, 3 ");
+
+            asm.WriteLine("mov ebx, 2 ");
+
+            asm.WriteLine("lea ecx, [" + identificador+ "]");
+
+            asm.WriteLine("mov edx, " + cadena.Length+1);
+
+            asm.WriteLine("int 0x80\n");
             match(")");
             match(";");
         }
@@ -379,8 +432,8 @@ namespace Semantica
                     valorActual *= valorfactor;
                     modificaValor(identificador, valorActual);
                     asm.WriteLine("pop ebx");
-                    asm.WriteLine("mov ebx,[" + identificador+ "]");
-                    asm.WriteLine("mul ebx");
+                    asm.WriteLine("mov ebx, " + identificador);
+                    asm.WriteLine("imul ebx");
                     asm.WriteLine("mov [" + identificador + "], eax");
                 }
                 else if (operador == "/=")
@@ -391,7 +444,7 @@ namespace Semantica
                     valorActual /= valorfactor;
                     modificaValor(identificador, valorActual);
                     asm.WriteLine("pop ebx");
-                    asm.WriteLine("mov ebx, [" + identificador+ "]");
+                    asm.WriteLine("mov ebx, " + identificador);
                     asm.WriteLine("div ebx");
                     asm.WriteLine("mov [" + identificador + "], eax");
                 }
@@ -403,7 +456,7 @@ namespace Semantica
                     valorActual %= valorfactor;
                     modificaValor(identificador, valorActual);
                     asm.WriteLine("pop ebx");
-                    asm.WriteLine("mov eax, [" + identificador+ "]");
+                    asm.WriteLine("mov eax, " + identificador);
                     asm.WriteLine("div ebx");
                     asm.WriteLine("mov [" + identificador + "], edx");
                 }
@@ -429,7 +482,8 @@ namespace Semantica
         {
             match("if");
             match("(");
-            string etiqueta = "EtiquetaIF" + (++countIF)+":";
+            string etiqueta = "EtiquetaIF" + (++countIF);
+            asm.WriteLine(etiqueta + ":");
             bool evalua = Condicion(etiqueta) && evaluaif;
             match(")");
             if (getContenido() == "{")
@@ -452,7 +506,7 @@ namespace Semantica
                     Instruccion(!evalua);
                 }
             }
-            asm.WriteLine(etiqueta);
+            //asm.WriteLine(etiqueta);
         }
 
         //Condicion -> Expresion operadoRelacional Expresion
@@ -493,6 +547,8 @@ namespace Semantica
         //While -> while(Condicion) bloqueInstrucciones | Instruccion
         private void While(bool evaluawhile)
         {
+            string etiqueta = "EtiquetaWl" + (++whilect);
+            asm.WriteLine(etiqueta + ":");
             match("while");
             match("(");
             bool evalua = true;
@@ -529,6 +585,7 @@ namespace Semantica
         private void Do(bool evaluado)
         {
             string etiqueta = "EtiquetaDO" + (++countDO);
+            //string etiqueta2 = "EtiquetaDOf "+ countDO;
             asm.WriteLine(etiqueta + ":");
             match("do");
             bool evalua = true;
@@ -561,6 +618,8 @@ namespace Semantica
                 }
 
             } while (evalua);
+            asm.WriteLine("jmp " + etiqueta);
+           // asm.WriteLine(etiqueta2 + ":");
         }
         //For -> for(Asignacion Condicion; Incremento) BloqueInstruccones | Instruccion 
         private void For(bool evalua)
@@ -691,17 +750,17 @@ namespace Semantica
                 switch (operador)
                 {
                     case "*":
-                        asm.WriteLine("mul ebx");
+                        asm.WriteLine("imul ebx");
                         asm.WriteLine("push eax");
                         s.Push(N1 * N2);
                         break;
                     case "/":
-                        asm.WriteLine("div ebx");
+                        asm.WriteLine("idiv ebx");
                         asm.WriteLine("push eax");
                         s.Push(N1 / N2);
                         break;
                     case "%":
-                        asm.WriteLine("div ebx");
+                        asm.WriteLine("idiv ebx");
                         asm.WriteLine("push edx");
                         s.Push(N1 % N2);
                         break;
@@ -717,7 +776,7 @@ namespace Semantica
             {
                 //Console.Write(getContenido());
                 //s.Push(float.Parse(getContenido()));
-                asm.WriteLine("mov eax, [" + getContenido()+"]");
+                asm.WriteLine("mov eax," + getContenido());
                 asm.WriteLine("push eax");
                 s.Push(float.Parse(getContenido())); // Se agregó esta línea
                 match(Tipos.Numero);
@@ -760,7 +819,7 @@ namespace Semantica
                                 s.Push(s.Pop());
                                 break;*/
                     }
-                    asm.WriteLine("mov eax,[" + valorCaster+ "]");
+                    asm.WriteLine("mov eax," + valorCaster);
                     asm.WriteLine("push eax");
                     s.Push(valorCaster);
 
