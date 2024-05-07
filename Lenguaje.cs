@@ -313,7 +313,7 @@ namespace Semantica
             {
                 throw new Error("Sintaxis: la variable " + identificador + " no esta declarada", log, linea);
             }
-            try
+            try//para git
             {
                 string valor = Console.ReadLine();
                 float nuevoValor = float.Parse(valor);
